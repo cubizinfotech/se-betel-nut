@@ -51,9 +51,9 @@
          <div class="d-flex gap-2">
             <!-- Export Excel Button -->
             <a href="{{ route('customers.export', 'excel') }}" 
-                class="btn btn-sm btn-outline-success" 
-                data-bs-toggle="tooltip" 
-                data-bs-placement="top" 
+                class="btn btn-sm btn-outline-success tooltip-custom" 
+                data-toggle="tooltip" 
+                data-placement="top" 
                 title="Export Customers to Excel"
             >
                 <i class="bi bi-file-earmark-excel-fill me-1"></i> Excel
@@ -61,9 +61,9 @@
 
             <!-- Export PDF Button -->
             <a href="{{ route('customers.export', 'pdf') }}" 
-                class="btn btn-sm btn-outline-danger" 
-                data-bs-toggle="tooltip" 
-                data-bs-placement="top" 
+                class="btn btn-sm btn-outline-danger tooltip-custom" 
+                data-toggle="tooltip" 
+                data-placement="top" 
                 title="Export Customers to PDF"
             >
                 <i class="bi bi-file-earmark-pdf-fill me-1"></i> PDF
