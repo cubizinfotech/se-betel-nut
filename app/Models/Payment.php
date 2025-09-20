@@ -21,15 +21,34 @@ class Payment extends Model
         'payment_time',
     ];
 
+    protected $casts = [
+        'payment_date' => 'date',
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
+    ];
+
     public $timestamps = true;
 
     public function user()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class)->withTrashed();
     }
 
     public function customer()
     {
-        return $this->belongsTo(Customer::class);
+        return $this->belongsTo(Customer::class)->withTrashed();
+    }
+    
+    public function order()
+    {
+        return $this->belongsTo(Order::class)->withTrashed();
+    }
+    
+    /**
+     * Check if the payment belongs to the authenticated user
+     */
+    public function belongsToUser($userId)
+    {
+        return $this->user_id === $userId;
     }
 }

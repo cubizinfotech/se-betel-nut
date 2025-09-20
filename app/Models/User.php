@@ -45,16 +45,16 @@ class User extends Authenticatable
 
     public function customers()
     {
-        return $this->hasMany(Customer::class);
+        return $this->hasMany(Customer::class)->withTrashed();
     }
 
     public function orders()
     {
-        return $this->hasMany(Order::class);
+        return $this->hasMany(Order::class)->withTrashed();
     }
 
     public function payments()
     {
-        return $this->hasMany(Payment::class);
+        return $this->hasMany(Payment::class)->withTrashed();
     }
 }

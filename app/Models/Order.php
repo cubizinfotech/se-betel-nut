@@ -31,15 +31,44 @@ class Order extends Model
         'grand_amount',
     ];
 
+    protected $casts = [
+        'order_date' => 'datetime',
+        'due_date' => 'datetime',
+        'per_bag_weight' => 'array',
+        'rate' => 'decimal:2',
+        'quantity' => 'decimal:2',
+        'discounted_bag_weight' => 'decimal:2',
+        'total_weight' => 'decimal:2',
+        'packaging_charge' => 'decimal:2',
+        'hamali_charge' => 'decimal:2',
+        'total_amount' => 'decimal:2',
+        'grand_amount' => 'decimal:2',
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
+    ];
+
     public $timestamps = true;
 
     public function user()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class)->withTrashed();
     }
 
     public function customer()
     {
-        return $this->belongsTo(Customer::class);
+        return $this->belongsTo(Customer::class)->withTrashed();
+    }
+    
+    public function payments()
+    {
+        return $this->hasMany(Payment::class)->withTrashed();
+    }
+    
+    /**
+     * Check if the order belongs to the authenticated user
+     */
+    public function belongsToUser($userId)
+    {
+        return $this->user_id === $userId;
     }
 }

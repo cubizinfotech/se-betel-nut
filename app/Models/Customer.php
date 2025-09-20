@@ -21,20 +21,34 @@ class Customer extends Model
         'address',
     ];
 
+    protected $casts = [
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
+        'deleted_at' => 'datetime',
+    ];
+
     public $timestamps = true;
 
     public function user()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class)->withTrashed();
     }
 
     public function orders()
     {
-        return $this->hasMany(Order::class);
+        return $this->hasMany(Order::class)->withTrashed();
     }
 
     public function payments()
     {
-        return $this->hasMany(Payment::class);
+        return $this->hasMany(Payment::class)->withTrashed();
+    }
+    
+    /**
+     * Check if the customer belongs to the authenticated user
+     */
+    public function belongsToUser($userId)
+    {
+        return $this->user_id === $userId;
     }
 }
