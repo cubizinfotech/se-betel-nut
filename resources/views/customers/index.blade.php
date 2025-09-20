@@ -46,9 +46,31 @@
 
 <!-- Customers Table -->
 <div class="card shadow">
-    <div class="card-header py-3">
+    <div class="card-header py-3 d-flex align-items-center justify-content-between">
         <h6 class="m-0 font-weight-bold text-primary">Customer List</h6>
+         <div class="d-flex gap-2">
+            <!-- Export Excel Button -->
+            <a href="{{ route('customers.export', 'excel') }}" 
+                class="btn btn-sm btn-outline-success" 
+                data-bs-toggle="tooltip" 
+                data-bs-placement="top" 
+                title="Export Customers to Excel"
+            >
+                <i class="bi bi-file-earmark-excel-fill me-1"></i> Excel
+            </a>
+
+            <!-- Export PDF Button -->
+            <a href="{{ route('customers.export', 'pdf') }}" 
+                class="btn btn-sm btn-outline-danger" 
+                data-bs-toggle="tooltip" 
+                data-bs-placement="top" 
+                title="Export Customers to PDF"
+            >
+                <i class="bi bi-file-earmark-pdf-fill me-1"></i> PDF
+            </a>
+        </div>
     </div>
+
     <div class="card-body">
         @if($customers->count() > 0)
             <div class="table-responsive">
