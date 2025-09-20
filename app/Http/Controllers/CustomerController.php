@@ -2,15 +2,18 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
 use App\Models\Customer;
 use Illuminate\Http\Request;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Validation\Rule;
+use Maatwebsite\Excel\Facades\Excel;
 
 class CustomerController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Customer::with('user')->where('user_id', auth()->id());
+        $query = Customer::where('user_id', auth()->id());
 
         // Search functionality
         if ($request->filled('search')) {
@@ -130,5 +133,29 @@ class CustomerController extends Controller
             'html' => $html,
             'pendingAmount' => $formattedAmount
         ], 200);
+    }
+    
+    public function export($type)
+    {
+        $customers = Customer::all(['first_name', 'last_name', 'email', 'phone', 'address', 'created_at']);
+
+        if ($type === 'excel') {
+            return Excel::download(new \App\Exports\CustomersExport, 'customers.xlsx');
+        }
+
+        if ($type === 'pdf') {
+            $customers = Customer::all(['first_name', 'last_name', 'email', 'phone', 'address', 'created_at']);
+
+            // Generate PDF in landscape
+            $pdf = Pdf::loadView('exports.pdf.customers', compact('customers'))
+                    ->setPaper('a4', 'landscape');
+
+            // Create filename with current date
+            $fileName = 'customers_' . Carbon::now()->format('Y-m-d') . '.pdf';
+
+            return $pdf->download($fileName);
+        }
+
+        return back()->with('error', 'Invalid export type.');
     }
 }

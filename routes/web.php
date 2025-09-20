@@ -35,6 +35,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::resource('customers', CustomerController::class);
     Route::post('/customer/{customer}/orders', [CustomerController::class, 'orders'])->name('customer.orders');
+    Route::get('/customers/export/{type}', [CustomerController::class, 'export'])->name('customers.export');
     Route::resource('orders', OrderController::class);
     Route::resource('payments', PaymentController::class);
     Route::resource('ledgers', LedgersController::class);
