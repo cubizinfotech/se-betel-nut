@@ -14,7 +14,7 @@
 </div>
 
 <div class="row">
-    <div class="col-lg-8">
+    <div class="col-lg-7">
         <div class="card shadow">
             <div class="card-header py-3">
                 <h6 class="m-0 font-weight-bold text-primary">Payment Information</h6>
@@ -28,8 +28,8 @@
                     <div class="row">
                         <div class="col-md-6 mb-3">
                             <label for="customer_id" class="form-label required">Customer</label>
-                            <select class="form-select @error('customer_id') is-invalid @enderror" 
-                                    id="customer_id" name="customer_id" required>
+                            <select class="form-select select2 @error('customer_id') is-invalid @enderror" 
+                                    id="customer_id" name="customer_id">
                                 <option value="">Select a customer</option>
                                 @foreach($customers as $customer)
                                     <option value="{{ $customer->id }}" 
@@ -45,11 +45,21 @@
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label for="payment_method" class="form-label">Pending Amount</label>
+                            <input type="text" class="form-control" id="pending_amount" value="" disabled>
+                        </div>
                         
+                        
+                    </div>
+                    
+                    <!-- Amount -->
+                    <div class="row">
                         <div class="col-md-6 mb-3">
                             <label for="payment_method" class="form-label required">Payment Method</label>
                             <select class="form-select @error('payment_method') is-invalid @enderror" 
-                                    id="payment_method" name="payment_method" required>
+                                    id="payment_method" name="payment_method">
                                 <option value="">Select payment method</option>
                                 <option value="cash" {{ old('payment_method', $payment->payment_method) == 'cash' ? 'selected' : '' }}>Cash</option>
                                 <option value="bank" {{ old('payment_method', $payment->payment_method) == 'bank' ? 'selected' : '' }}>Bank Transfer</option>
@@ -58,24 +68,12 @@
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
-                    </div>
-                    
-                    <!-- Amount -->
-                    <div class="row">
+
                         <div class="col-md-6 mb-3">
                             <label for="amount" class="form-label required">Amount (₹)</label>
                             <input type="number" step="0.01" min="0" class="form-control @error('amount') is-invalid @enderror" 
-                                   id="amount" name="amount" value="{{ old('amount', $payment->amount) }}" required>
+                                   id="amount" name="amount" value="{{ old('amount', $payment->amount) }}">
                             @error('amount')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-                        
-                        <div class="col-md-6 mb-3">
-                            <label for="payment_date" class="form-label required">Payment Date</label>
-                            <input type="date" class="form-control datepicker @error('payment_date') is-invalid @enderror" 
-                                   id="payment_date" name="payment_date" value="{{ old('payment_date', $payment->payment_date->format('Y-m-d')) }}" required>
-                            @error('payment_date')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
@@ -84,9 +82,18 @@
                     <!-- Payment Time -->
                     <div class="row">
                         <div class="col-md-6 mb-3">
+                            <label for="payment_date" class="form-label required">Payment Date</label>
+                            <input type="date" class="form-control datepicker @error('payment_date') is-invalid @enderror" 
+                                   id="payment_date" name="payment_date" value="{{ old('payment_date', $payment->payment_date->format('Y-m-d')) }}">
+                            @error('payment_date')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <div class="col-md-6 mb-3">
                             <label for="payment_time" class="form-label required">Payment Time</label>
                             <input type="time" class="form-control timepicker @error('payment_time') is-invalid @enderror" 
-                                   id="payment_time" name="payment_time" value="{{ old('payment_time', $payment->payment_time) }}" required>
+                                   id="payment_time" name="payment_time" value="{{ old('payment_time', $payment->payment_time) }}">
                             @error('payment_time')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -106,7 +113,7 @@
         </div>
     </div>
     
-    <div class="col-lg-4">
+    <div class="col-lg-5">
         <div class="card shadow">
             <div class="card-header py-3">
                 <h6 class="m-0 font-weight-bold text-primary">Payment Details</h6>
@@ -137,19 +144,13 @@
             </div>
         </div>
         
-        <div class="card shadow mt-3">
+        <!-- Customer Orders (if customer is selected) -->
+        <div class="card shadow mt-3" id="customerOrdersCard" style="display: none;">
             <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-primary">Quick Actions</h6>
+                <h6 class="m-0 font-weight-bold text-primary">Customer Orders</h6>
             </div>
-            <div class="card-body">
-                <div class="d-grid gap-2">
-                    <a href="{{ route('payments.show', $payment) }}" class="btn btn-outline-info">
-                        <i class="bi bi-eye me-1"></i> View Details
-                    </a>
-                    <a href="{{ route('customers.show', $payment->customer) }}" class="btn btn-outline-primary">
-                        <i class="bi bi-person me-1"></i> View Customer
-                    </a>
-                </div>
+            <div class="card-body overflow-auto" style="max-height: 400px;" id="customerOrdersContent">
+                <!-- Orders will be loaded here via AJAX -->
             </div>
         </div>
     </div>
@@ -159,7 +160,28 @@
 @section('scripts')
 <script>
 $(document).ready(function() {
-    // Form validation
+    // Load customer orders when customer is selected
+    $('#customer_id').on('change', function() {
+        const customerId = $(this).val();
+        
+        if (customerId) {
+            // Show the customer orders card
+            $('#customerOrdersCard').show();
+            
+            // Load customer orders via AJAX
+            $.post(`/customer/${customerId}/orders`, function(data) {
+                $('#customerOrdersContent').html(data.html);
+                $("#pending_amount").val(data.pendingAmount);
+            }).fail(function() {
+                $('#customerOrdersContent').html('<p class="text-muted">Unable to load customer orders.</p>');
+            });
+        } else {
+            $('#customerOrdersCard').hide();
+            $("#pending_amount").val('');
+        }
+    });
+
+   // Form validation
     $('#paymentForm').on('submit', function(e) {
         let isValid = true;
         
@@ -172,8 +194,18 @@ $(document).ready(function() {
         
         requiredFields.forEach(function(field) {
             if (!$('#' + field).val()) {
-                $('#' + field).addClass('is-invalid');
-                $('#' + field).after('<div class="invalid-feedback">This field is required.</div>');
+                if ($('#' + field).hasClass('select2')) {
+                    // Target Select2 container
+                    let $container = $('#'+field).next('.select2-container');
+                    $container.addClass('is-invalid');
+
+                    // Remove previous feedback if exists
+                    $container.next('.invalid-feedback').remove();
+                    $container.after('<div class="invalid-feedback">This field is required.</div>');
+                } else {
+                    $('#' + field).addClass('is-invalid');
+                    $('#' + field).after('<div class="invalid-feedback">This field is required.</div>');
+                }
                 isValid = false;
             }
         });
@@ -186,22 +218,16 @@ $(document).ready(function() {
             isValid = false;
         }
         
-        // Validate payment date is not in the future
-        const paymentDate = new Date($('#payment_date').val());
-        const today = new Date();
-        today.setHours(23, 59, 59, 999); // End of today
-        
-        if (paymentDate > today) {
-            $('#payment_date').addClass('is-invalid');
-            $('#payment_date').after('<div class="invalid-feedback">Payment date cannot be in the future.</div>');
-            isValid = false;
-        }
-        
         if (!isValid) {
             e.preventDefault();
             showToast('Please fix the errors below.', 'error');
         }
     });
+    
+    // Trigger customer change if customer_id is pre-selected
+    if ($('#customer_id').val()) {
+        $('#customer_id').trigger('change');
+    }
 });
 </script>
 @endsection

@@ -104,7 +104,7 @@
                                 </div>
                             </td>
                             <td>{{ $order->product_name }}</td>
-                            <td>{{ number_format($order->quantity, 2) }}</td>
+                            <td>{{ number_format($order->quantity, 0) }}</td>
                             <td>{{ number_format($order->total_weight, 2) }} kg</td>
                             <td>
                                 <div class="fw-bold">₹{{ number_format($order->grand_amount, 2) }}</div>

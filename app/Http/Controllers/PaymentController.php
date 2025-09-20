@@ -61,7 +61,7 @@ class PaymentController extends Controller
             'payment_time' => 'required',
         ]);
 
-        $payment = Payment::create([
+        Payment::create([
             'user_id' => auth()->id(),
             'customer_id' => $request->customer_id,
             'payment_method' => $request->payment_method,

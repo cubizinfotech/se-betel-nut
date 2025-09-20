@@ -11,8 +11,7 @@ class OrderController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Order::with(['customer', 'user'])
-            ->where('user_id', auth()->id());
+        $query = Order::where('user_id', auth()->id());
 
         // Search functionality
         if ($request->filled('search')) {

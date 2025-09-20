@@ -114,4 +114,21 @@ class CustomerController extends Controller
         return redirect()->route('customers.index')
             ->with('success', 'Customer deleted successfully.');
     }
+
+    public function orders(Customer $customer)
+    {
+        $orders = $customer->orders()->orderBy('created_at', 'desc')->get();
+
+        $pendingAmount = $orders->sum('grand_amount') - $customer->payments()->sum('amount');
+
+        // Format amount with ₹ and negative sign if needed
+        $formattedAmount = ($pendingAmount < 0 ? '-' : '') . '₹' . number_format(abs($pendingAmount), 2);
+
+        $html = view('customers.orders', compact('customer', 'orders'))->render();
+
+        return response()->json([
+            'html' => $html,
+            'pendingAmount' => $formattedAmount
+        ], 200);
+    }
 }

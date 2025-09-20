@@ -149,17 +149,3 @@ function showToast(message, type = "info", position = "bottom-end", duration = 3
         }
     });
 }
-
-// Initialize datepickers
-$(document).ready(function () {
-    $(".datepicker").datepicker({
-        format: "yyyy-mm-dd",
-        autoclose: true,
-        todayHighlight: true,
-    });
-
-    $(".timepicker").timepicker({
-        showMeridian: false,
-        minuteStep: 1,
-    });
-});

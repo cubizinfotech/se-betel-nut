@@ -17,7 +17,7 @@
 <div class="card shadow mb-4">
     <div class="card-body">
         <form method="GET" action="{{ route('payments.index') }}" class="row g-3">
-            <div class="col-md-3">
+            <div class="col-md-4">
                 <label for="search" class="form-label">Search Payments</label>
                 <input type="text" class="form-control" id="search" name="search" 
                        value="{{ request('search') }}" placeholder="Search by customer, amount...">
@@ -48,7 +48,7 @@
                     </button>
                 </div>
             </div>
-            <div class="col-md-2">
+            <div class="col-md-1">
                 <label class="form-label">&nbsp;</label>
                 <div class="d-grid">
                     <a href="{{ route('payments.index') }}" class="btn btn-outline-secondary">
