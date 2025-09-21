@@ -54,8 +54,29 @@
 
 <!-- Orders Table -->
 <div class="card shadow">
-    <div class="card-header py-3">
+    <div class="card-header py-3 d-flex align-items-center justify-content-between">
         <h6 class="m-0 font-weight-bold text-primary">Order List</h6>
+        <div class="d-flex gap-2">
+            <!-- Export Excel Button -->
+            <a href="{{ route('orders.export', ['type' => 'excel'] + request()->all()) }}"
+                class="btn btn-sm btn-outline-success tooltip-custom" 
+                data-toggle="tooltip" 
+                data-placement="top" 
+                title="Export Orders to Excel"
+            >
+                <i class="bi bi-file-earmark-excel-fill me-1"></i> Excel
+            </a>
+
+            <!-- Export PDF Button -->
+            <a href="{{ route('orders.export', ['type' => 'pdf'] + request()->all()) }}"
+                class="btn btn-sm btn-outline-danger tooltip-custom" 
+                data-toggle="tooltip" 
+                data-placement="top" 
+                title="Export Orders to PDF"
+            >
+                <i class="bi bi-file-earmark-pdf-fill me-1"></i> PDF
+            </a>
+        </div>
     </div>
     <div class="card-body">
         @if($orders->count() > 0)
@@ -139,27 +160,24 @@
                             </td>
                             <td>
                                 <div class="btn-group" role="group">
-                                    <div class="tooltip-custom">
+                                    <div class="tooltip-custom" data-toggle="tooltip" data-placement="top" title="View">
                                         <a href="{{ route('orders.show', $order) }}" 
                                            class="btn btn-sm btn-outline-info btn-action">
                                             <i class="bi bi-eye"></i>
                                         </a>
-                                        <span class="tooltip-text">View Order</span>
                                     </div>
-                                    <div class="tooltip-custom">
+                                    <div class="tooltip-custom" data-toggle="tooltip" data-placement="top" title="Edit">
                                         <a href="{{ route('orders.edit', $order) }}" 
                                            class="btn btn-sm btn-outline-warning btn-action">
                                             <i class="bi bi-pencil"></i>
                                         </a>
-                                        <span class="tooltip-text">Edit Order</span>
                                     </div>
-                                    <div class="tooltip-custom">
+                                    <div class="tooltip-custom" data-toggle="tooltip" data-placement="top" title="Delete">
                                         <button type="button" 
                                                 class="btn btn-sm btn-outline-danger btn-action"
                                                 onclick="confirmDelete('{{ route('orders.destroy', $order) }}', 'Delete Order', 'Are you sure you want to delete this order? This action cannot be undone.')">
                                             <i class="bi bi-trash"></i>
                                         </button>
-                                        <span class="tooltip-text">Delete Order</span>
                                     </div>
                                 </div>
                             </td>

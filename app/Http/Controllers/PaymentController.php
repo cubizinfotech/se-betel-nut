@@ -2,42 +2,36 @@
 
 namespace App\Http\Controllers;
 
+use Exception;
+use Carbon\Carbon;
 use App\Models\Payment;
 use App\Models\Customer;
 use Illuminate\Http\Request;
+use Barryvdh\DomPDF\Facade\Pdf;
+use App\Services\PaymentService;
+use Illuminate\Support\Facades\Log;
+use Maatwebsite\Excel\Facades\Excel;
 
 class PaymentController extends Controller
 {
+    protected $paymentService;
+
+    public function __construct(PaymentService $paymentService)
+    {
+        $this->paymentService = $paymentService;
+    }
+
     public function index(Request $request)
     {
-        $query = Payment::where('user_id', auth()->id());
-
-        // Search functionality
-        if ($request->filled('search')) {
-            $search = $request->search;
-            $query->where(function($q) use ($search) {
-                $q->where('amount', 'like', "%{$search}%")
-                  ->orWhereHas('customer', function($customerQuery) use ($search) {
-                      $customerQuery->where('first_name', 'like', "%{$search}%")
-                                   ->orWhere('last_name', 'like', "%{$search}%");
-                  });
-            });
+        try {
+        $payments = $this->paymentService
+            ->filter($request)
+            ->paginate(15)
+            ->withQueryString();
+        } catch (Exception $e) {
+            Log::error('Error fetching payments list', ['error' => $e->getMessage()]);
+            return back()->with('error', 'Something went wrong while fetching payments.');
         }
-
-        // Filter by date range
-        if ($request->filled('date_from')) {
-            $query->whereDate('payment_date', '>=', $request->date_from);
-        }
-        if ($request->filled('date_to')) {
-            $query->whereDate('payment_date', '<=', $request->date_to);
-        }
-
-        // Filter by payment method
-        if ($request->filled('payment_method')) {
-            $query->where('payment_method', $request->payment_method);
-        }
-
-        $payments = $query->orderBy('created_at', 'desc')->paginate(10)->withQueryString();
 
         return view('payments.index', compact('payments'));
     }
@@ -78,7 +72,7 @@ class PaymentController extends Controller
     {
         $this->authorize('view', $payment);
         
-        $payment->load(['customer', 'user']);
+        $payment->load(['customer'/* , 'user' */]);
 
         return view('payments.show', compact('payment'));
     }
@@ -126,5 +120,38 @@ class PaymentController extends Controller
 
         return redirect()->route('payments.index')
             ->with('success', 'Payment deleted successfully.');
+    }
+
+    public function export(Request $request, $type)
+    {
+        try {
+            $payments = $this->paymentService->filter($request)->get();
+
+            Log::info('Exporting orders', [
+                'type' => $type,
+                'count' => $payments->count(),
+                'filters' => $request->all()
+            ]);
+
+            if ($type === 'excel') {
+                // ✅ Pass filtered payments into PaymentsExport
+                return Excel::download(new \App\Exports\PaymentsExport($payments), 'payments_' . Carbon::now()->format('Y-m-d') . '.xlsx');
+            }
+
+            if ($type === 'pdf') {
+                $pdf = Pdf::loadView('exports.pdf.payments', compact('payments'))
+                          ->setPaper('a4', 'landscape');
+
+                $fileName = 'payments_' . Carbon::now()->format('Y-m-d') . '.pdf';
+
+                return $pdf->download($fileName);
+            }
+
+            return back()->with('error', 'Invalid export type.');
+
+
+        } catch (Exception $e) {
+
+        }
     }
 }

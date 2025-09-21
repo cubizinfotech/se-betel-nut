@@ -62,9 +62,31 @@
 
 <!-- Payments Table -->
 <div class="card shadow">
-    <div class="card-header py-3">
+    <div class="card-header py-3 d-flex align-items-center justify-content-between">
         <h6 class="m-0 font-weight-bold text-primary">Payment List</h6>
+        <div class="d-flex gap-2">
+            <!-- Export Excel Button -->
+            <a href="{{ route('payments.export', ['type' => 'excel'] + request()->all()) }}"
+                class="btn btn-sm btn-outline-success tooltip-custom" 
+                data-toggle="tooltip" 
+                data-placement="top" 
+                title="Export Payments to Excel"
+            >
+                <i class="bi bi-file-earmark-excel-fill me-1"></i> Excel
+            </a>
+
+            <!-- Export PDF Button -->
+            <a href="{{ route('payments.export', ['type' => 'pdf'] + request()->all()) }}"
+                class="btn btn-sm btn-outline-danger tooltip-custom" 
+                data-toggle="tooltip" 
+                data-placement="top" 
+                title="Export Payments to PDF"
+            >
+                <i class="bi bi-file-earmark-pdf-fill me-1"></i> PDF
+            </a>
+        </div>
     </div>
+
     <div class="card-body">
         @if($payments->count() > 0)
             <div class="table-responsive">

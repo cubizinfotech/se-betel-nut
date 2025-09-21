@@ -2,40 +2,39 @@
 
 namespace App\Http\Controllers;
 
+use Exception;
+use Carbon\Carbon;
 use App\Models\Order;
 use App\Models\Customer;
-use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use Illuminate\Http\Request;
+use App\Services\OrderService;
+use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\Log;
+use Maatwebsite\Excel\Facades\Excel;
 
 class OrderController extends Controller
 {
+    protected $orderService;
+
+    public function __construct(OrderService $orderService)
+    {
+        $this->orderService = $orderService;
+    }
+
     public function index(Request $request)
     {
-        $query = Order::where('user_id', auth()->id());
+        try {
+            $orders = $this->orderService
+                ->filter($request)
+                ->paginate(15)
+                ->withQueryString();
 
-        // Search functionality
-        if ($request->filled('search')) {
-            $search = $request->search;
-            $query->where(function($q) use ($search) {
-                $q->where('order_number', 'like', "%{$search}%")
-                  ->orWhere('product_name', 'like', "%{$search}%")
-                  ->orWhere('lot_number', 'like', "%{$search}%")
-                  ->orWhereHas('customer', function($customerQuery) use ($search) {
-                      $customerQuery->where('first_name', 'like', "%{$search}%")
-                                   ->orWhere('last_name', 'like', "%{$search}%");
-                  });
-            });
+            Log::info('Fetched orders list', ['count' => $orders->count()]);
+        } catch (Exception $e) {
+            Log::error('Error fetching orders list', ['error' => $e->getMessage()]);
+            return back()->with('error', 'Something went wrong while fetching orders.');
         }
-
-        // Filter by date range
-        if ($request->filled('date_from')) {
-            $query->whereDate('order_date', '>=', $request->date_from);
-        }
-        if ($request->filled('date_to')) {
-            $query->whereDate('order_date', '<=', $request->date_to);
-        }
-
-        $orders = $query->orderBy('created_at', 'desc')->paginate(15);
 
         return view('orders.index', compact('orders'));
     }
@@ -105,7 +104,7 @@ class OrderController extends Controller
     {
         $this->authorize('view', $order);
         
-        $order->load(['customer', 'user']);
+        $order->load(['customer'/* , 'user' */]);
 
         return view('orders.show', compact('order'));
     }
@@ -178,5 +177,42 @@ class OrderController extends Controller
 
         return redirect()->route('orders.index')
             ->with('success', 'Order deleted successfully.');
+    }
+
+    public function export(Request $request, $type)
+    {
+        try {
+            $orders = $this->orderService->filter($request)->get();
+
+            Log::info('Exporting orders', [
+                'type' => $type,
+                'count' => $orders->count(),
+                'filters' => $request->all()
+            ]);
+
+            if ($type === 'excel') {
+                // ✅ Pass filtered orders into OrdersExport
+                return Excel::download(new \App\Exports\OrdersExport($orders), 'orders_' . Carbon::now()->format('Y-m-d') . '.xlsx');
+            }
+
+            if ($type === 'pdf') {
+                $pdf = Pdf::loadView('exports.pdf.orders', compact('orders'))
+                          ->setPaper('a4', 'landscape');
+
+                $fileName = 'orders_' . Carbon::now()->format('Y-m-d') . '.pdf';
+
+                return $pdf->download($fileName);
+            }
+
+            return back()->with('error', 'Invalid export type.');
+        } catch (Exception $e) {
+            Log::error('Order export failed', [
+                'type' => $type,
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+
+            return back()->with('error', 'Export failed. Please try again later.');
+        }
     }
 }

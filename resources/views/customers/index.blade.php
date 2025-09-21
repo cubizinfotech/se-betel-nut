@@ -48,9 +48,9 @@
 <div class="card shadow">
     <div class="card-header py-3 d-flex align-items-center justify-content-between">
         <h6 class="m-0 font-weight-bold text-primary">Customer List</h6>
-         <div class="d-flex gap-2">
+        <div class="d-flex gap-2">
             <!-- Export Excel Button -->
-            <a href="{{ route('customers.export', 'excel') }}" 
+            <a href="{{ route('customers.export', ['type' => 'excel'] + request()->all()) }}"
                 class="btn btn-sm btn-outline-success tooltip-custom" 
                 data-toggle="tooltip" 
                 data-placement="top" 
@@ -60,7 +60,7 @@
             </a>
 
             <!-- Export PDF Button -->
-            <a href="{{ route('customers.export', 'pdf') }}" 
+            <a href="{{ route('customers.export', ['type' => 'pdf'] + request()->all()) }}"
                 class="btn btn-sm btn-outline-danger tooltip-custom" 
                 data-toggle="tooltip" 
                 data-placement="top" 

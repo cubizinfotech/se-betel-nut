@@ -2,7 +2,6 @@
 
 namespace App\Exports;
 
-use App\Models\Customer;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
@@ -12,14 +11,22 @@ use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
 class CustomersExport implements FromCollection, WithHeadings, WithMapping, WithStyles, ShouldAutoSize
 {
+    private $customers;
+
     private $counter = 0;
+
+    // ✅ Accept filtered customers from controller
+    public function __construct($customers)
+    {
+        $this->customers = $customers;
+    }
 
     /**
      * @return \Illuminate\Support\Collection
      */
     public function collection()
     {
-        return Customer::select('first_name', 'last_name', 'email', 'phone', 'address', 'created_at')->get();
+        return $this->customers; // ✅ Return only filtered data
     }
 
     public function headings(): array
@@ -29,22 +36,22 @@ class CustomersExport implements FromCollection, WithHeadings, WithMapping, With
 
     public function map($customer): array
     {
-        $this->counter++; // Increment serial number
+        $this->counter++; 
         return [
-            $this->counter, // ✅ Serial number
+            $this->counter,
             $customer->first_name,
             $customer->last_name,
             $customer->email,
             $customer->phone,
             $customer->address,
-            $customer->created_at->format('Y-m-d h:i:s A'), // 12-hour format
+            $customer->created_at->format('Y-m-d h:i:s A'),
         ];
     }
 
     public function styles(Worksheet $sheet)
     {
         return [
-            1 => ['font' => ['bold' => true]], // Bold headings
+            1 => ['font' => ['bold' => true]],
         ];
     }
 }

@@ -61,7 +61,8 @@ class Order extends Model
     
     public function payments()
     {
-        return $this->hasMany(Payment::class)->withTrashed();
+        // return $this->hasMany(Payment::class)->withTrashed();
+        return $this->hasManyThrough(Payment::class, Customer::class, 'id', 'customer_id', 'customer_id', 'id')->withTrashed();
     }
     
     /**

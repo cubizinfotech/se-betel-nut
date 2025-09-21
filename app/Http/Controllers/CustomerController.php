@@ -2,32 +2,38 @@
 
 namespace App\Http\Controllers;
 
+use Exception;
 use Carbon\Carbon;
 use App\Models\Customer;
 use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Validation\Rule;
+use App\Services\CustomerService;
+use Illuminate\Support\Facades\Log;
 use Maatwebsite\Excel\Facades\Excel;
 
 class CustomerController extends Controller
 {
+    protected $customerService;
+
+    public function __construct(CustomerService $customerService)
+    {
+        $this->customerService = $customerService;
+    }
+
     public function index(Request $request)
     {
-        $query = Customer::where('user_id', auth()->id());
+        try {
+            $customers = $this->customerService
+                ->filter($request)
+                ->paginate(10)
+                ->withQueryString();
 
-        // Search functionality
-        if ($request->filled('search')) {
-            $search = $request->search;
-            $query->where(function($q) use ($search) {
-                $q->where('first_name', 'like', "%{$search}%")
-                  ->orWhere('last_name', 'like', "%{$search}%")
-                  ->orWhere('email', 'like', "%{$search}%")
-                  ->orWhere('phone', 'like', "%{$search}%")
-                  ->orWhere('address', 'like', "%{$search}%");
-            });
+            Log::info('Fetched customers list', ['count' => $customers->count()]);
+        } catch (Exception $e) {
+            Log::error('Error fetching customers list', ['error' => $e->getMessage()]);
+            return back()->with('error', 'Something went wrong while fetching customers.');
         }
-
-        $customers = $query->orderBy('created_at', 'desc')->paginate(10)->withQueryString();
 
         return view('customers.index', compact('customers'));
     }
@@ -135,27 +141,43 @@ class CustomerController extends Controller
         ], 200);
     }
     
-    public function export($type)
+    public function export(Request $request, $type)
     {
-        $customers = Customer::all(['first_name', 'last_name', 'email', 'phone', 'address', 'created_at']);
+        try {
+            // ✅ Get filtered customers from service
+            $customers = $this->customerService
+                ->filter($request)
+                ->get(['first_name', 'last_name', 'email', 'phone', 'address', 'created_at']);
 
-        if ($type === 'excel') {
-            return Excel::download(new \App\Exports\CustomersExport, 'customers.xlsx');
+            Log::info('Exporting customers', [
+                'type' => $type,
+                'count' => $customers->count(),
+                'filters' => $request->all()
+            ]);
+
+            if ($type === 'excel') {
+                // ✅ Pass filtered customers into CustomersExport
+                return Excel::download(new \App\Exports\CustomersExport($customers), 'customers_' . Carbon::now()->format('Y-m-d') . '.xlsx');
+            }
+
+            if ($type === 'pdf') {
+                $pdf = Pdf::loadView('exports.pdf.customers', compact('customers'))
+                          ->setPaper('a4', 'landscape');
+
+                $fileName = 'customers_' . Carbon::now()->format('Y-m-d') . '.pdf';
+
+                return $pdf->download($fileName);
+            }
+
+            return back()->with('error', 'Invalid export type.');
+        } catch (Exception $e) {
+             Log::error('Customer export failed', [
+                'type' => $type,
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+
+            return back()->with('error', 'Export failed. Please try again later.');
         }
-
-        if ($type === 'pdf') {
-            $customers = Customer::all(['first_name', 'last_name', 'email', 'phone', 'address', 'created_at']);
-
-            // Generate PDF in landscape
-            $pdf = Pdf::loadView('exports.pdf.customers', compact('customers'))
-                    ->setPaper('a4', 'landscape');
-
-            // Create filename with current date
-            $fileName = 'customers_' . Carbon::now()->format('Y-m-d') . '.pdf';
-
-            return $pdf->download($fileName);
-        }
-
-        return back()->with('error', 'Invalid export type.');
     }
 }

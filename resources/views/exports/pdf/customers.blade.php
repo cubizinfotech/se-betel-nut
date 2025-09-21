@@ -1,15 +1,22 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Customers Export</title>
+    <title>Customers PDF</title>
     <style>
-        table { width: 100%; border-collapse: collapse; }
-        table, th, td { border: 1px solid #ddd; padding: 8px; }
-        th { background: #f4f4f4; text-align: left; }
+        body {
+            font-family: DejaVu Sans, sans-serif;
+            font-size: 12px;
+        }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { border: 1px solid #333; padding: 8px; text-align: left; }
+        th { background-color: #f2f2f2; }
+        .text-center { text-align: center; }
     </style>
 </head>
 <body>
-    <h2>Customer List</h2>
+    <h2 class="text-center">Customer List</h2>
+    <p>Total Customers: {{ $customers->count() }}</p>
+
     <table>
         <thead>
             <tr>
