@@ -20,6 +20,7 @@
         <thead>
             <tr>
                 <th>Sr. No.</th>
+                <th>Transaction Id</th>
                 <th>Customer</th>
                 <th>Phone</th>
                 <th>Amount (₹)</th>
@@ -35,13 +36,14 @@
                 @php $counter++; @endphp
                 <tr>
                     <td>{{ $counter }}</td>
+                    <td>{{ $payment->trans_number }}</td>
                     <td>{{ $payment->customer->first_name }} {{ $payment->customer->last_name }}</td>
                     <td>{{ $payment->customer->phone ?? '-' }}</td>
                     <td>₹{{ number_format($payment->amount, 2) }}</td>
                     <td>{{ ucfirst($payment->payment_method) }}</td>
-                    <td>{{ $payment->payment_date->format('d M Y') }}</td>
-                    <td>{{ \Carbon\Carbon::parse($payment->payment_time)->format('h:i A') }}</td>
-                    <td>{{ $payment->created_at->format('d M Y') }}</td>
+                    <td>{{ $payment->payment_date?->format('Y-m-d') }}</td>
+                    <td>{{ \Carbon\Carbon::parse($payment->payment_time)?->format('h:i A') }}</td>
+                    <td>{{ $payment->created_at?->format('Y-m-d h:i A') }}</td>
                 </tr>
             @endforeach
         </tbody>

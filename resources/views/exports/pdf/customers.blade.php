@@ -36,7 +36,7 @@
                 <td>{{ $c->email }}</td>
                 <td>{{ $c->phone }}</td>
                 <td>{{ $c->address }}</td>
-                <td>{{ $c->created_at->format('M d, Y') }}</td>
+                <td>{{ $c->created_at?->format('Y-m-d h:i A') }}</td>
             </tr>
             @endforeach
         </tbody>

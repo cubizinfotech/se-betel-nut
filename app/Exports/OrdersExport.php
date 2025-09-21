@@ -35,8 +35,8 @@ class OrdersExport implements FromCollection, WithHeadings, WithMapping, WithSty
             'Sr. No.',
             'Order #',
             'Customer',
-            'Product',
-            'Quantity',
+            'Product Name',
+            'Total Bags',
             'Total Weight',
             'Rate',
             'Total Amount',
@@ -44,7 +44,8 @@ class OrdersExport implements FromCollection, WithHeadings, WithMapping, WithSty
             'Hamali Charge',
             'Grand Amount',
             'Order Date',
-            'Due Date'
+            'Due Date',
+            'Created At'
         ];
     }
 
@@ -57,14 +58,15 @@ class OrdersExport implements FromCollection, WithHeadings, WithMapping, WithSty
             $order->customer->first_name . ' ' . $order->customer->last_name,
             $order->product_name,
             $order->quantity,
-            $order->total_weight . ' kg',
+            number_format($order->total_weight, 2) . ' kg',
             number_format($order->rate, 2),
             number_format($order->total_amount, 2),
             number_format($order->packaging_charge, 2),
             number_format($order->hamali_charge, 2),
-            number_format($order->grand_amount, 2),
-            $order->order_date->format('Y-m-d'),
-            $order->due_date->format('Y-m-d')
+            '₹ ' . number_format($order->grand_amount, 2),
+            $order->order_date?->format('Y-m-d h:i A'),
+            $order->due_date?->format('Y-m-d h:i A'),
+            $order->created_at?->format('Y-m-d h:i A'),
         ];
     }
 

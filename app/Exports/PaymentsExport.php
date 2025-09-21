@@ -34,6 +34,7 @@ class PaymentsExport implements FromCollection, WithHeadings, WithMapping, WithS
     {
         return [
             'Sr. No.',
+            'Transaction ID',
             'Customer',
             'Phone',
             'Amount (₹)',
@@ -49,13 +50,14 @@ class PaymentsExport implements FromCollection, WithHeadings, WithMapping, WithS
         $this->counter++;
         return [
             $this->counter,
+            $payment->trans_number,
             $payment->customer->first_name . ' ' . $payment->customer->last_name,
             $payment->customer->phone ?? '-',
             '₹' . number_format($payment->amount, 2),
             ucfirst($payment->payment_method),
-            $payment->payment_date->format('d M Y'),
-            \Carbon\Carbon::parse($payment->payment_time)->format('h:i A'),
-            $payment->created_at->format('d M Y')
+            $payment->payment_date?->format('Y-m-d'),
+            \Carbon\Carbon::parse($payment->payment_time)?->format('h:i A'),
+            $payment->created_at?->format('Y-m-d h:i A')
         ];
     }
 

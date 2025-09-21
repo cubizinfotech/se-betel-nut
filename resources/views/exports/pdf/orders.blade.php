@@ -23,8 +23,8 @@
                 <th>Sr. No.</th>
                 <th>Order #</th>
                 <th>Customer</th>
-                <th>Product</th>
-                <th>Quantity</th>
+                <th>Product Name</th>
+                <th>Total Bags</th>
                 <th>Total Weight</th>
                 <th>Rate</th>
                 <th>Total Amount</th>
@@ -33,6 +33,7 @@
                 <th>Grand Amount</th>
                 <th>Order Date</th>
                 <th>Due Date</th>
+                <th>Created At</th>
             </tr>
         </thead>
         <tbody>
@@ -43,14 +44,15 @@
                 <td>{{ $order->customer->first_name }} {{ $order->customer->last_name }}</td>
                 <td>{{ $order->product_name }}</td>
                 <td>{{ $order->quantity }}</td>
-                <td>{{ $order->total_weight }} kg</td>
+                <td>{{ number_format($order->total_weight, 2) }} kg</td>
                 <td>{{ number_format($order->rate, 2) }}</td>
                 <td>{{ number_format($order->total_amount, 2) }}</td>
                 <td>{{ number_format($order->packaging_charge, 2) }}</td>
                 <td>{{ number_format($order->hamali_charge, 2) }}</td>
-                <td>{{ number_format($order->grand_amount, 2) }}</td>
-                <td>{{ $order->order_date->format('Y-m-d') }}</td>
-                <td>{{ $order->due_date->format('Y-m-d') }}</td>
+                <td>₹{{ number_format($order->grand_amount, 2) }}</td>
+                <td>{{ $order->order_date?->format('Y-m-d h:i A') }}</td>
+                <td>{{ $order->due_date?->format('Y-m-d h:i A') }}</td>
+                <td>{{ $order->created_at?->format('Y-m-d h:i A') }}</td>
             </tr>
             @endforeach
         </tbody>

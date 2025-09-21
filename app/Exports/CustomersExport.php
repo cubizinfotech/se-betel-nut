@@ -31,7 +31,15 @@ class CustomersExport implements FromCollection, WithHeadings, WithMapping, With
 
     public function headings(): array
     {
-        return ['Sr. No.', 'First Name', 'Last Name', 'Email', 'Phone', 'Address', 'Created At'];
+        return [
+            'Sr. No.',
+            'First Name', 
+            'Last Name', 
+            'Email', 
+            'Phone', 
+            'Address', 
+            'Created At'
+        ];
     }
 
     public function map($customer): array
@@ -44,7 +52,7 @@ class CustomersExport implements FromCollection, WithHeadings, WithMapping, With
             $customer->email,
             $customer->phone,
             $customer->address,
-            $customer->created_at->format('Y-m-d h:i:s A'),
+            $customer->created_at?->format('Y-m-d h:i A'),
         ];
     }
 
