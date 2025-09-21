@@ -24,20 +24,20 @@
                 <input type="text" class="form-control" id="search" name="search" 
                        value="{{ request('search') }}" placeholder="Search by name, email, or phone...">
             </div>
-            <div class="col-md-2 d-flex align-items-end">
+            <div class="col-md-1">
                 <label class="form-label">&nbsp;&nbsp;&nbsp;</label>
-                <div class="d-flex">
-                    <div class="">
-                        <button type="submit" class="btn btn-outline-primary">
-                            <i class="bi bi-search me-1"></i> Search
-                        </button>
-                    </div>
-                    <label class="form-label">&nbsp;&nbsp;&nbsp;</label>
-                    <div class="">
-                        <a href="{{ route('customers.index') }}" class="btn btn-outline-secondary">
-                            <i class="bi bi-arrow-clockwise me-1"></i> Reset
-                        </a>
-                    </div>
+                <div class="">
+                    <button type="submit" class="btn btn-outline-primary">
+                        <i class="bi bi-search me-1"></i> Search
+                    </button>
+                </div>
+            </div>
+            <div class="col-md-1">
+                <label class="form-label">&nbsp;&nbsp;&nbsp;</label>
+                <div class="">
+                    <a href="{{ route('customers.index') }}" class="btn btn-outline-secondary">
+                        <i class="bi bi-arrow-clockwise me-1"></i> Reset
+                    </a>
                 </div>
             </div>
         </form>
@@ -56,7 +56,7 @@
                 data-placement="top" 
                 title="Export Customers to Excel"
             >
-                <i class="bi bi-file-earmark-excel-fill me-1"></i> Excel
+                <i class="bi bi-file-earmark-excel me-1"></i> Excel
             </a>
 
             <!-- Export PDF Button -->
@@ -66,7 +66,7 @@
                 data-placement="top" 
                 title="Export Customers to PDF"
             >
-                <i class="bi bi-file-earmark-pdf-fill me-1"></i> PDF
+                <i class="bi bi-file-earmark-pdf me-1"></i> PDF
             </a>
         </div>
     </div>
@@ -136,7 +136,7 @@
                                     <span class="text-muted">No address</span>
                                 @endif
                             </td>
-                            <td>{{ $customer->created_at->format('M d, Y') }}</td>
+                            <td>{{ $customer->created_at->format('M d, Y h:i A') }}</td>
                             <td>
                                 <div class="btn-group" role="group">
                                     <div class="tooltip-custom" data-toggle="tooltip" data-placement="top" title="View">

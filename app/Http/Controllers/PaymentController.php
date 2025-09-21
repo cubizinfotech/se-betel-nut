@@ -6,6 +6,7 @@ use Exception;
 use Carbon\Carbon;
 use App\Models\Payment;
 use App\Models\Customer;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
 use App\Services\PaymentService;
@@ -33,7 +34,11 @@ class PaymentController extends Controller
             return back()->with('error', 'Something went wrong while fetching payments.');
         }
 
-        return view('payments.index', compact('payments'));
+        $customers = Customer::where('user_id', auth()->id())
+            ->orderBy('first_name')
+            ->get();
+
+        return view('payments.index', compact('payments', 'customers'));
     }
 
     public function create()
@@ -55,13 +60,17 @@ class PaymentController extends Controller
             'payment_time' => 'required',
         ]);
 
+        // Generate unique trans number
+        $transNumber = 'TRANS-' . strtoupper(Str::random(6));
+
         Payment::create([
             'user_id' => auth()->id(),
             'customer_id' => $request->customer_id,
+            'trans_number' => $transNumber,
             'payment_method' => $request->payment_method,
             'amount' => $request->amount,
             'payment_date' => $request->payment_date,
-            'payment_time' => $request->payment_time,
+            'payment_time' => Carbon::parse($request->payment_time)->format('H:i:s'),
         ]);
 
         return redirect()->route('payments.index')
@@ -105,7 +114,7 @@ class PaymentController extends Controller
             'payment_method' => $request->payment_method,
             'amount' => $request->amount,
             'payment_date' => $request->payment_date,
-            'payment_time' => $request->payment_time,
+            'payment_time' => Carbon::parse($request->payment_time)->format('H:i:s'),
         ]);
 
         return redirect()->route('payments.index')

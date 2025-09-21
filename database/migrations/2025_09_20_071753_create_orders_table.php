@@ -21,11 +21,11 @@ return new class extends Migration
             $table->decimal('rate', 10, 2);
             $table->decimal('discounted_bag_weight', 10, 2);
             $table->json('per_bag_weight')->nullable();
-            $table->decimal('packaging_charge', 10, 2);
-            $table->decimal('hamali_charge', 10, 2);
+            $table->decimal('packaging_charge', 10, 2)->nullable();
+            $table->decimal('hamali_charge', 10, 2)->nullable();
             $table->dateTime('order_date');
-            $table->dateTime('due_date');
-            $table->decimal('quantity', 10, 2);
+            $table->dateTime('due_date')->nullable();
+            $table->integer('quantity');
             $table->decimal('total_weight', 10, 2);
             $table->decimal('total_amount', 10, 2);
             $table->decimal('grand_amount', 10, 2);

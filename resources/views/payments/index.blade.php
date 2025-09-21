@@ -17,10 +17,24 @@
 <div class="card shadow mb-4">
     <div class="card-body">
         <form method="GET" action="{{ route('payments.index') }}" class="row g-3">
-            <div class="col-md-4">
+            <div class="col-md-2">
                 <label for="search" class="form-label">Search Payments</label>
                 <input type="text" class="form-control" id="search" name="search" 
                        value="{{ request('search') }}" placeholder="Search by customer, amount...">
+            </div>
+            <div class="col-md-2">
+                <label for="customer_id" class="form-label">Customer</label>
+                <select class="form-select select2" id="customer" name="customer">
+                    <option value="">Select a customer</option>
+                    @foreach($customers as $customer)
+                        <option value="{{ $customer->id }}" {{ request('customer') == $customer->id ? 'selected' : '' }}>
+                            {{ $customer->first_name }} {{ $customer->last_name }}
+                            @if($customer->phone)
+                                - {{ $customer->phone }}
+                            @endif
+                        </option>
+                    @endforeach
+                </select>
             </div>
             <div class="col-md-2">
                 <label for="payment_method" class="form-label">Payment Method</label>
@@ -32,13 +46,13 @@
             </div>
             <div class="col-md-2">
                 <label for="date_from" class="form-label">From Date</label>
-                <input type="date" class="form-control datepicker" id="date_from" name="date_from" 
-                       value="{{ request('date_from') }}">
+                <input type="text" class="form-control flatpickr-date" id="date_from" name="date_from" 
+                       value="{{ request('date_from') }}" placeholder="Select start date">
             </div>
             <div class="col-md-2">
                 <label for="date_to" class="form-label">To Date</label>
-                <input type="date" class="form-control datepicker" id="date_to" name="date_to" 
-                       value="{{ request('date_to') }}">
+                <input type="text" class="form-control flatpickr-date" id="date_to" name="date_to" 
+                       value="{{ request('date_to') }}" placeholder="Select end date">
             </div>
             <div class="col-md-1">
                 <label class="form-label">&nbsp;</label>
@@ -72,7 +86,7 @@
                 data-placement="top" 
                 title="Export Payments to Excel"
             >
-                <i class="bi bi-file-earmark-excel-fill me-1"></i> Excel
+                <i class="bi bi-file-earmark-excel me-1"></i> Excel
             </a>
 
             <!-- Export PDF Button -->
@@ -82,7 +96,7 @@
                 data-placement="top" 
                 title="Export Payments to PDF"
             >
-                <i class="bi bi-file-earmark-pdf-fill me-1"></i> PDF
+                <i class="bi bi-file-earmark-pdf me-1"></i> PDF
             </a>
         </div>
     </div>
@@ -93,6 +107,7 @@
                 <table class="table table-bordered table-hover">
                     <thead class="table-light">
                         <tr>
+                            <th>Payment #</th>
                             <th>Customer</th>
                             <th>Amount</th>
                             <th>Method</th>
@@ -105,6 +120,11 @@
                     <tbody>
                         @foreach($payments as $payment)
                         <tr>
+                            <td>
+                                <a href="{{ route('payments.show', $payment) }}" class="text-decoration-none fw-bold">
+                                    {{ $payment->trans_number }}
+                                </a>
+                            </td>
                             <td>
                                 <div class="d-flex align-items-center">
                                     <div class="avatar avatar-sm me-3">
@@ -139,7 +159,7 @@
                             </td>
                             <td>{{ $payment->payment_date->format('M d, Y') }}</td>
                             <td>{{ \Carbon\Carbon::parse($payment->payment_time)->format('h:i A') }}</td>
-                            <td>{{ $payment->created_at->format('M d, Y') }}</td>
+                            <td>{{ $payment->created_at?->format('M d, Y h:i A') }}</td>
                             <td>
                                 <div class="btn-group" role="group">
                                     <div class="tooltip-custom" data-toggle="tooltip" data-placement="top" title="View">

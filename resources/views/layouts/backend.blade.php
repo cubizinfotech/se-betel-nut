@@ -7,19 +7,29 @@
 
     <title>@yield('title', 'Admin Panel') - {{ config('app.name', 'Laravel') }}</title>
 
-    <!-- Bootstrap CSS -->
+    <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Bootstrap Icons -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
-    <!-- Bootstrap Datepicker -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-datepicker@1.9.0/dist/css/bootstrap-datepicker.min.css" rel="stylesheet">
-    <!-- Bootstrap Timepicker -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-timepicker@0.5.2/css/bootstrap-timepicker.min.css" rel="stylesheet">
+    <!-- Flatpickr CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <!-- Select2 -->
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
     
     <!-- Custom CSS -->
     <link href="{{ asset('css/backend.css') }}" rel="stylesheet">
+
+    <style>
+        .select2-selection {
+            height: 38px !important;
+            padding: 6px 12px !important;
+            border: 1px solid #ced4da !important;
+            border-radius: 0.375rem !important;
+        }
+        .flatpickr-time.flatpickr-input {
+            height: 38px !important;
+        }
+    </style>
 
     @yield('styles')
 </head>
@@ -74,19 +84,14 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <!-- jQuery -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <!-- Popper.js -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
-    <!-- Bootstrap JS (for Bootstrap 4 components if needed) -->
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <!-- select2 -->
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-    <!-- Bootstrap Datepicker -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap-datepicker@1.9.0/dist/js/bootstrap-datepicker.min.js"></script>
-    <!-- Bootstrap Timepicker -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap-timepicker@0.5.2/js/bootstrap-timepicker.min.js"></script>
+    <!-- Flatpickr -->
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     
+
     <!-- Custom JS -->
     <script src="{{ asset('js/backend.js') }}"></script>
     <script>
@@ -94,17 +99,22 @@
             // Initialize tooltips
             $('[data-toggle="tooltip"]').tooltip();
 
-            // Initialize datepickers
-            $(".datepicker").datepicker({
-                format: "yyyy-mm-dd",
-                autoclose: true,
-                todayHighlight: true,
+            // Initialize Flatpickr for datetime fields
+            flatpickr(".flatpickr-datetime", {
+                enableTime: true,
+                dateFormat: "Y-m-d h:i K",
             });
 
-            // nitialize timepickers
-            $(".timepicker").timepicker({
-                showMeridian: false,
-                minuteStep: 1,
+            // Initialize Flatpickr for date fields
+            flatpickr(".flatpickr-date", {
+                dateFormat: "Y-m-d",
+            });
+
+            // Initialize Flatpickr for time fields
+            flatpickr(".flatpickr-time", {
+                noCalendar: true,
+                enableTime: true,
+                dateFormat: "h:i K",
             });
 
             // Initialize Select2

@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->foreignId('customer_id')->constrained('customers')->onDelete('cascade');
+            $table->string('trans_number')->unique();
             $table->enum('payment_method', ['cash', 'bank']);
             $table->decimal('amount', 10, 2);
             $table->date('payment_date');

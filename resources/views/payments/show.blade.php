@@ -9,9 +9,6 @@
         <p class="text-muted">Payment Record #{{ $payment->id }}</p>
     </div>
     <div class="btn-group">
-        <a href="{{ route('payments.edit', $payment) }}" class="btn btn-warning">
-            <i class="bi bi-pencil me-1"></i> Edit
-        </a>
         <a href="{{ route('payments.index') }}" class="btn btn-outline-secondary">
             <i class="bi bi-arrow-left me-1"></i> Back to Payments
         </a>
@@ -77,7 +74,7 @@
                         
                         <div class="mb-3">
                             <strong>Payment Time:</strong><br>
-                            <span class="text-muted">{{ $payment->payment_time }}</span>
+                            <span class="text-muted">{{ $payment->payment_time ? \Carbon\Carbon::createFromFormat('H:i:s', $payment->payment_time)->format('h:i A') : '' }}</span>
                         </div>
                         
                         <div class="mb-3">

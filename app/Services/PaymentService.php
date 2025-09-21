@@ -45,6 +45,11 @@ Class PaymentService
             $query->where('payment_method', $request->payment_method);
         }
 
+        // Customer filter
+        if ($request->filled('customer')) {
+            $query->where('customer_id', $request->customer);
+        }
+
         return $query->orderBy('created_at', 'desc');
     }
 }

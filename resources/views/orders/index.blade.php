@@ -22,17 +22,31 @@
                 <input type="text" class="form-control" id="search" name="search" 
                        value="{{ request('search') }}" placeholder="Search by order #, product, customer...">
             </div>
+            <div class="col-md-3">
+                <label for="customer_id" class="form-label">Customer</label>
+                <select class="form-select select2" id="customer" name="customer">
+                    <option value="">Select a customer</option>
+                    @foreach($customers as $customer)
+                        <option value="{{ $customer->id }}" {{ request('customer') == $customer->id ? 'selected' : '' }}>
+                            {{ $customer->first_name }} {{ $customer->last_name }}
+                            @if($customer->phone)
+                                - {{ $customer->phone }}
+                            @endif
+                        </option>
+                    @endforeach
+                </select>
+            </div>
             <div class="col-md-2">
                 <label for="date_from" class="form-label">From Date</label>
-                <input type="date" class="form-control datepicker" id="date_from" name="date_from" 
-                       value="{{ request('date_from') }}">
+                <input type="text" class="form-control flatpickr-date" id="date_from" name="date_from" 
+                       value="{{ request('date_from') }}" placeholder="Select start date">
             </div>
             <div class="col-md-2">
                 <label for="date_to" class="form-label">To Date</label>
-                <input type="date" class="form-control datepicker" id="date_to" name="date_to" 
-                       value="{{ request('date_to') }}">
+                <input type="text" class="form-control flatpickr-date" id="date_to" name="date_to" 
+                       value="{{ request('date_to') }}" placeholder="Select end date">
             </div>
-            <div class="col-md-2">
+            <div class="col-md-1">
                 <label class="form-label">&nbsp;</label>
                 <div class="d-grid">
                     <button type="submit" class="btn btn-outline-primary">
@@ -40,7 +54,7 @@
                     </button>
                 </div>
             </div>
-            <div class="col-md-3">
+            <div class="col-md-1">
                 <label class="form-label">&nbsp;</label>
                 <div class="d-grid">
                     <a href="{{ route('orders.index') }}" class="btn btn-outline-secondary">
@@ -64,7 +78,7 @@
                 data-placement="top" 
                 title="Export Orders to Excel"
             >
-                <i class="bi bi-file-earmark-excel-fill me-1"></i> Excel
+                <i class="bi bi-file-earmark-excel me-1"></i> Excel
             </a>
 
             <!-- Export PDF Button -->
@@ -74,7 +88,7 @@
                 data-placement="top" 
                 title="Export Orders to PDF"
             >
-                <i class="bi bi-file-earmark-pdf-fill me-1"></i> PDF
+                <i class="bi bi-file-earmark-pdf me-1"></i> PDF
             </a>
         </div>
     </div>
@@ -86,13 +100,13 @@
                         <tr>
                             <th>Order #</th>
                             <th>Customer</th>
+                            <th>Lot Number</th>
                             <th>Product</th>
-                            <th>Quantity</th>
+                            <th>Total Bag</th>
                             <th>Total Weight</th>
+                            <th>Rate</th>
                             <th>Amount</th>
                             <th>Order Date</th>
-                            <th>Due Date</th>
-                            <th>Status</th>
                             <th width="150">Actions</th>
                         </tr>
                     </thead>
@@ -121,43 +135,30 @@
                                     </div>
                                     <div>
                                         <div class="fw-bold">{{ $order->customer->first_name }} {{ $order->customer->last_name }}</div>
+                                        @if($order->customer->phone)
+                                            <small class="text-muted">{{ $order->customer->phone }}</small>
+                                        @endif
                                     </div>
                                 </div>
                             </td>
+                            <td>{{ $order->lot_number }}</td>
                             <td>{{ $order->product_name }}</td>
                             <td>{{ number_format($order->quantity, 0) }}</td>
                             <td>{{ number_format($order->total_weight, 2) }} kg</td>
+                            <td>₹ {{ number_format($order->rate, 2) }}</td>
                             <td>
                                 <div class="fw-bold">₹{{ number_format($order->grand_amount, 2) }}</div>
-                                @if($order->packaging_charge > 0 || $order->hamali_charge > 0)
-                                    <small class="text-muted">
-                                        Base: ₹{{ number_format($order->total_amount, 2) }}
-                                        @if($order->packaging_charge > 0)
-                                            + Pkg: ₹{{ number_format($order->packaging_charge, 2) }}
-                                        @endif
-                                        @if($order->hamali_charge > 0)
-                                            + Ham: ₹{{ number_format($order->hamali_charge, 2) }}
-                                        @endif
-                                    </small>
-                                @endif
+                                <small class="text-muted">
+                                    Base: ₹{{ number_format($order->total_amount, 2) }}
+                                    @if($order->packaging_charge > 0)
+                                        + Pkg: ₹{{ number_format($order->packaging_charge, 2) }}
+                                    @endif
+                                    @if($order->hamali_charge > 0)
+                                        + Ham: ₹{{ number_format($order->hamali_charge, 2) }}
+                                    @endif
+                                </small>
                             </td>
-                            <td>{{ $order->order_date->format('M d, Y') }}</td>
-                            <td>{{ $order->due_date->format('M d, Y') }}</td>
-                            <td>
-                                @php
-                                    $now = now();
-                                    $dueDate = \Carbon\Carbon::parse($order->due_date);
-                                    $isOverdue = $dueDate->isPast() && $order->payments->sum('amount') < $order->grand_amount;
-                                    $isPaid = false;
-                                @endphp
-                                @if($isOverdue)
-                                    <span class="badge bg-danger">Overdue</span>
-                                @elseif($isPaid)
-                                    <span class="badge bg-success">Paid</span>
-                                @else
-                                    <span class="badge bg-warning">Pending</span>
-                                @endif
-                            </td>
+                            <td>{{ \Carbon\Carbon::parse($order->order_date)->format('M d, Y h:i A') }}</td>
                             <td>
                                 <div class="btn-group" role="group">
                                     <div class="tooltip-custom" data-toggle="tooltip" data-placement="top" title="View">
@@ -175,9 +176,15 @@
                                     <div class="tooltip-custom" data-toggle="tooltip" data-placement="top" title="Delete">
                                         <button type="button" 
                                                 class="btn btn-sm btn-outline-danger btn-action"
-                                                onclick="confirmDelete('{{ route('orders.destroy', $order) }}', 'Delete Order', 'Are you sure you want to delete this order? This action cannot be undone.')">
+                                                onclick="confirmDelete(`{{ route('orders.destroy', $order) }}`, 'Delete Order', 'Are you sure you want to delete this order? This action cannot be undone.')">
                                             <i class="bi bi-trash"></i>
                                         </button>
+                                    </div>
+                                    <div class="tooltip-custom" data-toggle="tooltip" data-placement="top" title="Download Bill PDF">
+                                        <a href="{{ route('orders.bill_pdf', $order) }}" 
+                                           class="btn btn-sm btn-outline-success btn-action">
+                                            <i class="bi bi-file-earmark-pdf"></i>
+                                        </a>
                                     </div>
                                 </div>
                             </td>
@@ -188,12 +195,12 @@
             </div>
 
             <!-- Pagination -->
-            <div class="d-flex justify-content-between align-items-center mt-4">
-                <div class="pagination-info">
+            <div class="d-flex justify-content-between align-items-center mt-3">
+                <div>
                     Showing {{ $orders->firstItem() }} to {{ $orders->lastItem() }} of {{ $orders->total() }} results
                 </div>
-                <div>
-                    @include('components.pagination', ['paginator' => $orders])
+                <div class="">
+                    {{ $orders->links() }}
                 </div>
             </div>
         @else

@@ -499,6 +499,9 @@ body {
 .stat-card-success {
     background: linear-gradient(135deg, var(--success-color) 0%, #059669 100%);
 }
+.stat-card-danger {
+    background: linear-gradient(135deg, var(--danger-color) 0%, #ef4444 100%);
+}
 
 .stat-card-warning {
     background: linear-gradient(135deg, var(--warning-color) 0%, #d97706 100%);

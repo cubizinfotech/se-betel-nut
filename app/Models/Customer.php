@@ -36,12 +36,12 @@ class Customer extends Model
 
     public function orders()
     {
-        return $this->hasMany(Order::class)->withTrashed();
+        return $this->hasMany(Order::class);
     }
 
     public function payments()
     {
-        return $this->hasMany(Payment::class)->withTrashed();
+        return $this->hasMany(Payment::class);
     }
     
     /**

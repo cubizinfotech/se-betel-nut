@@ -80,7 +80,7 @@
                     <div class="row">
                         <div class="col-md-6 mb-3">
                             <label for="payment_date" class="form-label required">Payment Date</label>
-                            <input type="date" class="form-control datepicker @error('payment_date') is-invalid @enderror" 
+                            <input type="text" class="form-control flatpickr-date @error('payment_date') is-invalid @enderror" 
                                    id="payment_date" name="payment_date" value="{{ old('payment_date', date('Y-m-d')) }}">
                             @error('payment_date')
                                 <div class="invalid-feedback">{{ $message }}</div>
@@ -89,8 +89,8 @@
 
                         <div class="col-md-6 mb-3">
                             <label for="payment_time" class="form-label required">Payment Time</label>
-                            <input type="time" class="form-control timepicker @error('payment_time') is-invalid @enderror" 
-                                   id="payment_time" name="payment_time" value="{{ old('payment_time', date('H:i')) }}">
+                            <input type="text" class="form-control flatpickr-time @error('payment_time') is-invalid @enderror" 
+                                   id="payment_time" name="payment_time" value="{{ old('payment_time', date('h:i A')) }}">
                             @error('payment_time')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -142,7 +142,7 @@
             <div class="card-header py-3">
                 <h6 class="m-0 font-weight-bold text-primary">Customer Orders</h6>
             </div>
-            <div class="card-body" id="customerOrdersContent">
+            <div class="card-body overflow-auto" style="max-height: 350px;" id="customerOrdersContent">
                 <!-- Orders will be loaded here via AJAX -->
             </div>
         </div>
