@@ -14,7 +14,7 @@ class RoleAndPermissionSeeder extends Seeder
     public function run()
     {
         // Create roles
-        Role::firstOrCreate(['name' => 'seller']);
+        Role::firstOrCreate(['name' => 'admin']);
 
         // Create permissions
         Permission::firstOrCreate(['name' => 'manage customers']);
@@ -23,9 +23,9 @@ class RoleAndPermissionSeeder extends Seeder
         Permission::firstOrCreate(['name' => 'manage ledgers']);
 
         // Assign permissions to roles
-        $sellerRole = Role::where('name', 'seller')->first();
+        $adminRole = Role::where('name', 'admin')->first();
 
-        $sellerRole->givePermissionTo([
+        $adminRole->givePermissionTo([
             'manage customers',
             'manage orders',
             'manage payments',

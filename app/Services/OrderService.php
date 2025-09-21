@@ -41,6 +41,11 @@ class OrderService
             $query->whereDate('order_date', '<=', $request->date_to);
         }
 
+        // Customer filter
+        if ($request->filled('customer')) {
+            $query->where('customer_id', $request->customer);
+        }
+
         return $query->orderBy('created_at', 'desc');
     }
 }

@@ -36,7 +36,7 @@ class Order extends Model
         'due_date' => 'datetime',
         'per_bag_weight' => 'array',
         'rate' => 'decimal:2',
-        'quantity' => 'decimal:2',
+        'quantity' => 'integer',
         'discounted_bag_weight' => 'decimal:2',
         'total_weight' => 'decimal:2',
         'packaging_charge' => 'decimal:2',
@@ -57,12 +57,6 @@ class Order extends Model
     public function customer()
     {
         return $this->belongsTo(Customer::class)->withTrashed();
-    }
-    
-    public function payments()
-    {
-        // return $this->hasMany(Payment::class)->withTrashed();
-        return $this->hasManyThrough(Payment::class, Customer::class, 'id', 'customer_id', 'customer_id', 'id')->withTrashed();
     }
     
     /**

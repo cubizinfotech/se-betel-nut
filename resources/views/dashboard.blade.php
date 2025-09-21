@@ -12,7 +12,7 @@
 
 <!-- Statistics Cards -->
 <div class="row mb-4">
-    <div class="col-lg-3 col-md-6 mb-4">
+    <div class="col-lg-2 col-md-6 mb-4">
         <div class="card stat-card card-hover h-100">
             <div class="card-body">
                 <div class="d-flex align-items-center">
@@ -28,8 +28,8 @@
         </div>
     </div>
 
-    <div class="col-lg-3 col-md-6 mb-4">
-        <div class="card stat-card-success card-hover h-100">
+    <div class="col-lg-2 col-md-6 mb-4">
+        <div class="card stat-card stat-card-success card-hover h-100">
             <div class="card-body">
                 <div class="d-flex align-items-center">
                     <div class="flex-grow-1">
@@ -44,8 +44,24 @@
         </div>
     </div>
 
+    <div class="col-lg-2 col-md-6 mb-4">
+        <div class="card stat-card stat-card-danger card-hover h-100">
+            <div class="card-body">
+                <div class="d-flex align-items-center">
+                    <div class="flex-grow-1">
+                        <div class="text-xs font-weight-bold text-uppercase mb-1">Total Payments</div>
+                        <div class="h5 mb-0 font-weight-bold">{{ number_format($totalPayments) }}</div>
+                    </div>
+                    <div class="flex-shrink-0">
+                        <i class="bi bi-credit-card fa-2x"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="col-lg-3 col-md-6 mb-4">
-        <div class="card stat-card-warning card-hover h-100">
+        <div class="card stat-card stat-card-warning card-hover h-100">
             <div class="card-body">
                 <div class="d-flex align-items-center">
                     <div class="flex-grow-1">
@@ -61,7 +77,7 @@
     </div>
 
     <div class="col-lg-3 col-md-6 mb-4">
-        <div class="card stat-card-info card-hover h-100">
+        <div class="card stat-card stat-card-info card-hover h-100">
             <div class="card-body">
                 <div class="d-flex align-items-center">
                     <div class="flex-grow-1">

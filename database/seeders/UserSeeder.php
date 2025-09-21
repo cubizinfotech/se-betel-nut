@@ -13,11 +13,11 @@ class UserSeeder extends Seeder
     public function run(): void
     {
         User::firstOrCreate(
-            ['email' => 'seller.se@yopmail.com'],
+            ['email' => 'admin@example.com'],
             [
-                'name' => 'SE Seller',
+                'name' => 'Admin User',
                 'password' => bcrypt('password'),
             ]
-        )->assignRole('seller');
+        )->assignRole('admin');
     }
 }

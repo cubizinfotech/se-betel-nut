@@ -27,7 +27,7 @@ class OrderController extends Controller
         try {
             $orders = $this->orderService
                 ->filter($request)
-                ->paginate(15)
+                ->paginate(10)
                 ->withQueryString();
 
             Log::info('Fetched orders list', ['count' => $orders->count()]);
@@ -36,7 +36,11 @@ class OrderController extends Controller
             return back()->with('error', 'Something went wrong while fetching orders.');
         }
 
-        return view('orders.index', compact('orders'));
+        $customers = Customer::where('user_id', auth()->id())
+            ->orderBy('first_name')
+            ->get();
+
+        return view('orders.index', compact('orders', 'customers'));
     }
 
     public function create()
@@ -50,34 +54,34 @@ class OrderController extends Controller
 
     public function store(Request $request)
     {
+        // echo '<pre>'; print_r($request->all()); echo '</pre>'; exit;
         $request->validate([
             'customer_id' => 'required|exists:customers,id',
             'product_name' => 'required|string|max:255',
             'lot_number' => 'nullable|string|max:255',
             'rate' => 'required|numeric|min:0',
-            'quantity' => 'required|numeric|min:0',
+            'quantity' => 'required|integer|min:0',
             'discounted_bag_weight' => 'required|numeric|min:0',
-            'per_bag_weight' => 'nullable|array',
-            'per_bag_weight.*' => 'numeric|min:0',
-            'packaging_charge' => 'required|numeric|min:0',
-            'hamali_charge' => 'required|numeric|min:0',
+            'per_bag_weight' => 'required|array',
+            'packaging_charge' => 'nullable|numeric|min:0',
+            'hamali_charge' => 'nullable|numeric|min:0',
             'order_date' => 'required|date',
-            'due_date' => 'required|date|after:order_date',
+            'due_date' => 'nullable|date|after:order_date',
+            'total_weight' => 'required|numeric|min:0',
+            'total_amount' => 'required|numeric|min:0',
+            'grand_amount' => 'required|numeric|min:0',
         ]);
 
         // Generate unique order number
-        $orderNumber = 'ORD-' . strtoupper(Str::random(8));
+        $orderNumber = 'ORD-' . strtoupper(Str::random(6));
 
-        // Calculate total weight
-        $totalWeight = $request->quantity * $request->discounted_bag_weight;
+        $perBagWeight = $request->per_bag_weight ?? [];
+        // Remove null, empty string, or zero values if needed
+        $perBagWeight = array_filter($perBagWeight, function($value) {
+            return $value !== null && $value !== '';
+        });
 
-        // Calculate total amount
-        $totalAmount = $totalWeight * $request->rate;
-
-        // Calculate grand amount
-        $grandAmount = $totalAmount + $request->packaging_charge + $request->hamali_charge;
-
-        $order = Order::create([
+        Order::create([
             'user_id' => auth()->id(),
             'customer_id' => $request->customer_id,
             'order_number' => $orderNumber,
@@ -86,14 +90,14 @@ class OrderController extends Controller
             'rate' => $request->rate,
             'quantity' => $request->quantity,
             'discounted_bag_weight' => $request->discounted_bag_weight,
-            'per_bag_weight' => $request->per_bag_weight ? json_encode($request->per_bag_weight) : null,
-            'total_weight' => $totalWeight,
+            'per_bag_weight' => json_encode($perBagWeight),
+            'total_weight' => $request->total_weight,
             'packaging_charge' => $request->packaging_charge,
             'hamali_charge' => $request->hamali_charge,
             'order_date' => $request->order_date,
             'due_date' => $request->due_date,
-            'total_amount' => $totalAmount,
-            'grand_amount' => $grandAmount,
+            'total_amount' => $request->total_amount,
+            'grand_amount' => $request->grand_amount,
         ]);
 
         return redirect()->route('orders.index')
@@ -124,29 +128,29 @@ class OrderController extends Controller
     {
         $this->authorize('update', $order);
 
+        // echo '<pre>'; print_r($request->all()); echo '</pre>'; exit;
         $request->validate([
             'customer_id' => 'required|exists:customers,id',
             'product_name' => 'required|string|max:255',
             'lot_number' => 'nullable|string|max:255',
             'rate' => 'required|numeric|min:0',
-            'quantity' => 'required|numeric|min:0',
+            'quantity' => 'required|integer|min:0',
             'discounted_bag_weight' => 'required|numeric|min:0',
-            'per_bag_weight' => 'nullable|array',
-            'per_bag_weight.*' => 'numeric|min:0',
-            'packaging_charge' => 'required|numeric|min:0',
-            'hamali_charge' => 'required|numeric|min:0',
+            'per_bag_weight' => 'required|array',
+            'packaging_charge' => 'nullable|numeric|min:0',
+            'hamali_charge' => 'nullable|numeric|min:0',
             'order_date' => 'required|date',
-            'due_date' => 'required|date|after:order_date',
+            'due_date' => 'nullable|date|after:order_date',
+            'total_weight' => 'required|numeric|min:0',
+            'total_amount' => 'required|numeric|min:0',
+            'grand_amount' => 'required|numeric|min:0',
         ]);
 
-        // Calculate total weight
-        $totalWeight = $request->quantity * $request->discounted_bag_weight;
-
-        // Calculate total amount
-        $totalAmount = $totalWeight * $request->rate;
-
-        // Calculate grand amount
-        $grandAmount = $totalAmount + $request->packaging_charge + $request->hamali_charge;
+        $perBagWeight = $request->per_bag_weight ?? [];
+        // Remove null, empty string, or zero values if needed
+        $perBagWeight = array_filter($perBagWeight, function($value) {
+            return $value !== null && $value !== '';
+        });
 
         $order->update([
             'customer_id' => $request->customer_id,
@@ -155,14 +159,14 @@ class OrderController extends Controller
             'rate' => $request->rate,
             'quantity' => $request->quantity,
             'discounted_bag_weight' => $request->discounted_bag_weight,
-            'per_bag_weight' => $request->per_bag_weight ? json_encode($request->per_bag_weight) : null,
-            'total_weight' => $totalWeight,
+            'per_bag_weight' => json_encode($perBagWeight),
+            'total_weight' => $request->total_weight,
             'packaging_charge' => $request->packaging_charge,
             'hamali_charge' => $request->hamali_charge,
             'order_date' => $request->order_date,
             'due_date' => $request->due_date,
-            'total_amount' => $totalAmount,
-            'grand_amount' => $grandAmount,
+            'total_amount' => $request->total_amount,
+            'grand_amount' => $request->grand_amount,
         ]);
 
         return redirect()->route('orders.index')

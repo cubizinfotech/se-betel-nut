@@ -9,9 +9,6 @@
         <p class="text-muted">{{ $customer->first_name }} {{ $customer->last_name }}</p>
     </div>
     <div class="btn-group">
-        <a href="{{ route('customers.edit', $customer) }}" class="btn btn-warning">
-            <i class="bi bi-pencil me-1"></i> Edit
-        </a>
         <a href="{{ route('customers.index') }}" class="btn btn-outline-secondary">
             <i class="bi bi-arrow-left me-1"></i> Back to Customers
         </a>
@@ -109,7 +106,7 @@
         <div class="card shadow mb-4">
             <div class="card-header py-3 d-flex justify-content-between align-items-center">
                 <h6 class="m-0 font-weight-bold text-primary">Recent Orders</h6>
-                <a href="{{ route('orders.index', ['customer_id' => $customer->id]) }}" class="btn btn-sm btn-outline-primary">
+                <a href="{{ route('orders.index', ['customer' => $customer->id]) }}" class="btn btn-sm btn-outline-primary">
                     View All
                 </a>
             </div>
@@ -120,10 +117,11 @@
                             <thead>
                                 <tr>
                                     <th>Order #</th>
-                                    <th>Product</th>
+                                    <th>Total Bag</th>
+                                    <th>Total Weight</th>
+                                    <th>Rate</th>
                                     <th>Amount</th>
-                                    <th>Date</th>
-                                    <th>Status</th>
+                                    <th>Order Date</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -134,23 +132,22 @@
                                             {{ $order->order_number }}
                                         </a>
                                     </td>
-                                    <td>{{ $order->product_name }}</td>
-                                    <td>₹{{ number_format($order->grand_amount, 2) }}</td>
-                                    <td>{{ $order->order_date->format('M d, Y') }}</td>
+                                    <td>{{ number_format($order->quantity, 0) }}</td>
+                                    <td>{{ number_format($order->total_weight, 2) }} kg</td>
+                                    <td>₹{{ number_format($order->rate, 2) }}</td>
                                     <td>
-                                        @php
-                                            $now = now();
-                                            $dueDate = \Carbon\Carbon::parse($order->due_date);
-                                            $isOverdue = $dueDate->isPast() && $order->payments->sum('amount') < $order->grand_amount;
-                                        @endphp
-                                        @if($isOverdue)
-                                            <span class="badge bg-danger">Overdue</span>
-                                        @elseif($order->payments->sum('amount') >= $order->grand_amount)
-                                            <span class="badge bg-success">Paid</span>
-                                        @else
-                                            <span class="badge bg-warning">Pending</span>
-                                        @endif
+                                        <div class="fw-bold">₹{{ number_format($order->grand_amount, 2) }}</div>
+                                        <small class="text-muted">
+                                            Base: ₹{{ number_format($order->total_amount, 2) }}
+                                            @if($order->packaging_charge > 0)
+                                                + Pkg: ₹{{ number_format($order->packaging_charge, 2) }}
+                                            @endif
+                                            @if($order->hamali_charge > 0)
+                                                + Ham: ₹{{ number_format($order->hamali_charge, 2) }}
+                                            @endif
+                                        </small>
                                     </td>
+                                    <td>{{ $order->order_date?->format('M d, Y h:i A') }}</td>
                                 </tr>
                                 @endforeach
                             </tbody>
@@ -172,7 +169,7 @@
         <div class="card shadow">
             <div class="card-header py-3 d-flex justify-content-between align-items-center">
                 <h6 class="m-0 font-weight-bold text-primary">Recent Payments</h6>
-                <a href="{{ route('payments.index', ['customer_id' => $customer->id]) }}" class="btn btn-sm btn-outline-primary">
+                <a href="{{ route('payments.index', ['customer' => $customer->id]) }}" class="btn btn-sm btn-outline-primary">
                     View All
                 </a>
             </div>
@@ -182,6 +179,7 @@
                         <table class="table table-sm">
                             <thead>
                                 <tr>
+                                    <th>Payment #</th>
                                     <th>Amount</th>
                                     <th>Method</th>
                                     <th>Date</th>
@@ -191,6 +189,11 @@
                             <tbody>
                                 @foreach($customer->payments->take(5) as $payment)
                                 <tr>
+                                    <td>
+                                        <a href="{{ route('payments.show', $payment) }}" class="text-decoration-none">
+                                            {{ $payment->trans_number }}
+                                        </a>
+                                    </td>
                                     <td>₹{{ number_format($payment->amount, 2) }}</td>
                                     <td>
                                         <span class="badge bg-{{ $payment->payment_method == 'cash' ? 'success' : 'info' }}">
@@ -198,7 +201,9 @@
                                         </span>
                                     </td>
                                     <td>{{ $payment->payment_date->format('M d, Y') }}</td>
-                                    <td>{{ $payment->payment_time }}</td>
+                                    <td>
+                                        {{ $payment->payment_time ? \Carbon\Carbon::createFromFormat('H:i:s', $payment->payment_time)->format('h:i A') : '' }}
+                                    </td>
                                 </tr>
                                 @endforeach
                             </tbody>
