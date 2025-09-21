@@ -58,7 +58,7 @@
                 <label class="form-label">&nbsp;</label>
                 <div class="d-grid">
                     <button type="submit" class="btn btn-outline-primary">
-                        <i class="bi bi-search"></i>
+                        <i class="bi bi-search me-1"></i> Search
                     </button>
                 </div>
             </div>

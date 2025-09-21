@@ -57,7 +57,7 @@
                         </div>
 
                         <div class="col-md-4 mb-3">
-                            <label for="discounted_bag_weight" class="form-label required">Discounted Weight per Bag (kg)</label>
+                            <label for="discounted_bag_weight" class="form-label required">Disc. Weight per Bag (kg)</label>
                             <input type="text" class="form-control decimal-input @error('discounted_bag_weight') is-invalid @enderror" 
                                    id="discounted_bag_weight" name="discounted_bag_weight" value="{{ old('discounted_bag_weight', $order->discounted_bag_weight) }}"
                                    oninput="formatDecimal(this); calculateAllRows();" placeholder="0.00">
