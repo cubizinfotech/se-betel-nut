@@ -26,7 +26,14 @@
                     <!-- Customer Selection -->
                     <div class="row">
                         <div class="col-md-4 mb-3">
-                            <label for="customer_id" class="form-label required">Customer</label>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <label for="customer_id" class="form-label required">Customer</label>
+                                <button type="button" class="btn btn-sm btn-outline-primary ms-2 tooltip-custom" 
+                                    data-toggle="tooltip" data-placement="top" title="Add New Customer"
+                                    data-bs-toggle="modal" data-bs-target="#addCustomerModal">
+                                    +
+                                </button>
+                            </div>
                             <select class="form-select select2 @error('customer_id') is-invalid @enderror" 
                                     id="customer_id" name="customer_id">
                                 <option value="">Select a customer</option>
@@ -302,10 +309,94 @@
         </div>
     </div>
 </div>
+
+<!-- Add Customer Modal -->
+<div class="modal fade" id="addCustomerModal" tabindex="-1" aria-labelledby="addCustomerLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form id="addCustomerForm">
+                @csrf
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addCustomerLabel">Add Customer</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="first_name" class="form-label required">First Name</label>
+                        <input type="text" class="form-control" id="first_name" name="first_name" placeholder="Enter first name">
+                    </div>
+                    <div class="mb-3">
+                        <label for="last_name" class="form-label">Last Name</label>
+                        <input type="text" class="form-control" id="last_name" name="last_name" placeholder="Enter last name">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 @endsection
 
 @section('scripts')
 <script>
+
+    $(document).ready(function () {
+        // Handle Add Customer form submit
+        $('#addCustomerForm').submit(function (e) {
+            e.preventDefault();
+
+            let isValid = true;
+        
+            // Clear previous error states
+            $('.form-control').removeClass('is-invalid');
+            $('.invalid-feedback').remove();
+            
+            // Validate first name
+            if (!$('#first_name').val().trim()) {
+                $('#first_name').addClass('is-invalid');
+                $('#first_name').after('<div class="invalid-feedback">First name is required.</div>');
+                isValid = false;
+            }
+
+            if (!isValid) {
+                e.preventDefault();
+                showToast('Please fix the errors below.', 'error');
+                return;
+            }
+
+            $.ajax({
+                url: "{{ route('customers.store') }}", // your customer store route
+                method: "POST",
+                data: $(this).serialize(),
+                success: function (response) {
+                    // Close modal
+                    $('#addCustomerModal').modal('hide');
+
+                    // Reset form
+                    $('#addCustomerForm')[0].reset();
+
+                    // Add new customer to dropdown
+                    let newOption = new Option(response.first_name + ' ' + (response.last_name ?? ''), response.id, true, true);
+                    $('#customer_id').append(newOption).trigger('change');
+
+                    // Optional: toast success message
+                    toastr.success("Customer added successfully!");
+                },
+                error: function (xhr) {
+                    let errors = xhr.responseJSON.errors;
+                    let message = "Error adding customer.";
+                    if (errors) {
+                        message = Object.values(errors).map(err => err.join('<br>')).join('<br>');
+                    }
+                    toastr.error(message);
+                }
+            });
+        });
+    });
+
     // Format decimal
     function formatDecimal(input) {
         let value = input.value.replace(/[^\d.]/g, '');

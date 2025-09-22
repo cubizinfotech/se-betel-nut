@@ -53,7 +53,7 @@ class CustomerController extends Controller
             'address' => 'nullable|string|max:500',
         ]);
 
-        Customer::create([
+        $customer = Customer::create([
             'user_id' => auth()->id(),
             'first_name' => $request->first_name,
             'last_name' => $request->last_name,
@@ -61,6 +61,10 @@ class CustomerController extends Controller
             'phone' => $request->phone,
             'address' => $request->address,
         ]);
+
+        if ($request->ajax()) {
+            return response()->json($customer, 201);
+        }
 
         return redirect()->route('customers.index')
             ->with('success', 'Customer created successfully.');

@@ -48,7 +48,7 @@
 
                         <div class="col-md-6 mb-3">
                             <label for="payment_method" class="form-label">Pending Amount</label>
-                            <input type="text" class="form-control" id="pending_amount" value="" disabled>
+                            <input type="text" class="form-control" id="pending_amount" value="" disabled placeholder="Select a customer to view pending amount">
                         </div>
                         
                         
@@ -72,7 +72,7 @@
                         <div class="col-md-6 mb-3">
                             <label for="amount" class="form-label required">Amount (₹)</label>
                             <input type="number" step="0.01" min="0" class="form-control @error('amount') is-invalid @enderror" 
-                                   id="amount" name="amount" value="{{ old('amount', $payment->amount) }}">
+                                   id="amount" name="amount" value="{{ old('amount', $payment->amount) }}" placeholder="Enter payment amount">
                             @error('amount')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -84,7 +84,7 @@
                         <div class="col-md-6 mb-3">
                             <label for="payment_date" class="form-label required">Payment Date</label>
                             <input type="text" class="form-control flatpickr-date @error('payment_date') is-invalid @enderror" 
-                                   id="payment_date" name="payment_date" value="{{ old('payment_date', $payment->payment_date->format('Y-m-d')) }}">
+                                   id="payment_date" name="payment_date" value="{{ old('payment_date', $payment->payment_date->format('Y-m-d')) }}" placeholder="Select payment date">
                             @error('payment_date')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -93,7 +93,7 @@
                         <div class="col-md-6 mb-3">
                             <label for="payment_time" class="form-label required">Payment Time</label>
                             <input type="text" class="form-control flatpickr-time @error('payment_time') is-invalid @enderror" 
-                                   id="payment_time" name="payment_time" value="{{ old('payment_time', $payment->payment_time) }}">
+                                   id="payment_time" name="payment_time" value="{{ old('payment_time', $payment->payment_time) }}" placeholder="Select payment time">
                             @error('payment_time')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror

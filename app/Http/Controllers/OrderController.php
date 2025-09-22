@@ -183,6 +183,21 @@ class OrderController extends Controller
             ->with('success', 'Order deleted successfully.');
     }
 
+    public function bill_pdf(Order $order)
+    {
+        $this->authorize('view', $order);
+        
+        $order->load(['customer']);
+
+        // echo '<pre>'; print_r($order->toArray()); echo '</pre>'; exit;
+
+        $pdf = Pdf::loadView('orders.bill_pdf', compact('order'))->setPaper('a4', 'portrait');
+
+        $fileName = 'bill_' . $order->order_number . '.pdf';
+
+        return $pdf->download($fileName);
+    }
+
     public function export(Request $request, $type)
     {
         try {
