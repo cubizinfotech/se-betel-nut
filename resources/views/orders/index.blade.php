@@ -19,7 +19,7 @@
         <form method="GET" action="{{ route('orders.index') }}" class="row g-3">
             <div class="col-md-3">
                 <label for="search" class="form-label">Search Orders</label>
-                <input type="text" class="form-control" id="search" name="search" 
+                <input type="text" class="form-control" id="search" name="search"
                        value="{{ request('search') }}" placeholder="Search by order #, product, customer...">
             </div>
             <div class="col-md-3">
@@ -38,12 +38,12 @@
             </div>
             <div class="col-md-2">
                 <label for="date_from" class="form-label">From Date</label>
-                <input type="text" class="form-control flatpickr-date" id="date_from" name="date_from" 
+                <input type="text" class="form-control flatpickr-date" id="date_from" name="date_from"
                        value="{{ request('date_from') }}" placeholder="Select start date">
             </div>
             <div class="col-md-2">
                 <label for="date_to" class="form-label">To Date</label>
-                <input type="text" class="form-control flatpickr-date" id="date_to" name="date_to" 
+                <input type="text" class="form-control flatpickr-date" id="date_to" name="date_to"
                        value="{{ request('date_to') }}" placeholder="Select end date">
             </div>
             <div class="col-md-1">
@@ -73,9 +73,9 @@
         <div class="d-flex gap-2">
             <!-- Export Excel Button -->
             <a href="{{ route('orders.export', ['type' => 'excel'] + request()->all()) }}"
-                class="btn btn-sm btn-outline-success tooltip-custom" 
-                data-toggle="tooltip" 
-                data-placement="top" 
+                class="btn btn-sm btn-outline-success tooltip-custom"
+                data-toggle="tooltip"
+                data-placement="top"
                 title="Export Orders to Excel"
             >
                 <i class="bi bi-file-earmark-excel me-1"></i> Excel
@@ -83,9 +83,9 @@
 
             <!-- Export PDF Button -->
             <a href="{{ route('orders.export', ['type' => 'pdf'] + request()->all()) }}"
-                class="btn btn-sm btn-outline-danger tooltip-custom" 
-                data-toggle="tooltip" 
-                data-placement="top" 
+                class="btn btn-sm btn-outline-danger tooltip-custom"
+                data-toggle="tooltip"
+                data-placement="top"
                 title="Export Orders to PDF"
             >
                 <i class="bi bi-file-earmark-pdf me-1"></i> PDF
@@ -158,30 +158,30 @@
                                     @endif
                                 </small>
                             </td>
-                            <td>{{ \Carbon\Carbon::parse($order->order_date)->format('M d, Y h:i A') }}</td>
+                            <td>{{ \Carbon\Carbon::parse($order->order_date)->format('M d, Y') }}</td>
                             <td>
                                 <div class="btn-group" role="group">
                                     <div class="tooltip-custom" data-toggle="tooltip" data-placement="top" title="View">
-                                        <a href="{{ route('orders.show', $order) }}" 
+                                        <a href="{{ route('orders.show', $order) }}"
                                            class="btn btn-sm btn-outline-info btn-action">
                                             <i class="bi bi-eye"></i>
                                         </a>
                                     </div>
                                     <div class="tooltip-custom" data-toggle="tooltip" data-placement="top" title="Edit">
-                                        <a href="{{ route('orders.edit', $order) }}" 
+                                        <a href="{{ route('orders.edit', $order) }}"
                                            class="btn btn-sm btn-outline-warning btn-action">
                                             <i class="bi bi-pencil"></i>
                                         </a>
                                     </div>
                                     <div class="tooltip-custom" data-toggle="tooltip" data-placement="top" title="Delete">
-                                        <button type="button" 
+                                        <button type="button"
                                                 class="btn btn-sm btn-outline-danger btn-action"
                                                 onclick="confirmDelete(`{{ route('orders.destroy', $order) }}`, 'Delete Order', 'Are you sure you want to delete this order? This action cannot be undone.')">
                                             <i class="bi bi-trash"></i>
                                         </button>
                                     </div>
                                     <div class="tooltip-custom" data-toggle="tooltip" data-placement="top" title="Download Bill PDF">
-                                        <a href="{{ route('orders.bill_pdf', $order) }}" 
+                                        <a href="{{ route('orders.bill_pdf', $order) }}"
                                            class="btn btn-sm btn-outline-success btn-action">
                                             <i class="bi bi-file-earmark-pdf"></i>
                                         </a>

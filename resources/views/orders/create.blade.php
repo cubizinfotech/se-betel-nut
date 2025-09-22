@@ -22,23 +22,23 @@
             <div class="card-body">
                 <form action="{{ route('orders.store') }}" method="POST" id="orderForm">
                     @csrf
-                    
+
                     <!-- Customer Selection -->
                     <div class="row">
                         <div class="col-md-4 mb-3">
                             <div class="d-flex justify-content-between align-items-center">
                                 <label for="customer_id" class="form-label required">Customer</label>
-                                <button type="button" class="btn btn-sm btn-outline-primary ms-2 tooltip-custom" 
+                                <button type="button" class="btn btn-sm btn-outline-primary ms-2 tooltip-custom"
                                     data-toggle="tooltip" data-placement="top" title="Add New Customer"
                                     data-bs-toggle="modal" data-bs-target="#addCustomerModal">
                                     +
                                 </button>
                             </div>
-                            <select class="form-select select2 @error('customer_id') is-invalid @enderror" 
+                            <select class="form-select select2 @error('customer_id') is-invalid @enderror"
                                     id="customer_id" name="customer_id">
                                 <option value="">Select a customer</option>
                                 @foreach($customers as $customer)
-                                    <option value="{{ $customer->id }}" 
+                                    <option value="{{ $customer->id }}"
                                             {{ old('customer_id', request('customer_id')) == $customer->id ? 'selected' : '' }}>
                                         {{ $customer->first_name }} {{ $customer->last_name }}
                                         @if($customer->phone)
@@ -54,8 +54,8 @@
 
                         <div class="col-md-4 mb-3">
                             <label for="rate" class="form-label required">Rate (₹ per kg)</label>
-                            <input type="text" class="form-control decimal-input @error('rate') is-invalid @enderror" 
-                                   id="rate" name="rate" value="{{ old('rate') }}" placeholder="0.00" 
+                            <input type="text" class="form-control decimal-input @error('rate') is-invalid @enderror"
+                                   id="rate" name="rate" value="{{ old('rate') }}" placeholder="0.00"
                                    oninput="formatDecimal(this); calculateAllRows();">
                             @error('rate')
                                 <div class="invalid-feedback">{{ $message }}</div>
@@ -64,7 +64,7 @@
 
                         <div class="col-md-4 mb-3">
                             <label for="discounted_bag_weight" class="form-label required">Disc. Weight per Bag (kg)</label>
-                            <input type="text" class="form-control decimal-input @error('discounted_bag_weight') is-invalid @enderror" 
+                            <input type="text" class="form-control decimal-input @error('discounted_bag_weight') is-invalid @enderror"
                                    id="discounted_bag_weight" name="discounted_bag_weight" value="{{ old('discounted_bag_weight') }}"
                                    oninput="formatDecimal(this); calculateAllRows();" placeholder="0.00">
                             @error('discounted_bag_weight')
@@ -72,12 +72,12 @@
                             @enderror
                         </div>
                     </div>
-                    
+
                     <!-- Product Details -->
                     <div class="row">
                         <div class="col-md-4 mb-3">
                             <label for="lot_number" class="form-label">Lot Number</label>
-                            <input type="text" class="form-control @error('lot_number') is-invalid @enderror" 
+                            <input type="text" class="form-control @error('lot_number') is-invalid @enderror"
                                    id="lot_number" name="lot_number" value="{{ old('lot_number') }}" placeholder="Enter lot number">
                             @error('lot_number')
                                 <div class="invalid-feedback">{{ $message }}</div>
@@ -87,7 +87,7 @@
                         <div class="col-md-4 mb-3">
                             <label for="order_date" class="form-label required">Order Date</label>
                             <div class="input-group">
-                                <input type="text" class="form-control flatpickr-datetime @error('order_date') is-invalid @enderror" 
+                                <input type="text" class="form-control flatpickr-date @error('order_date') is-invalid @enderror"
                                        id="order_date" name="order_date" value="{{ old('order_date', date('Y-m-d h:i A')) }}"
                                        placeholder="Select date & time">
                                 <span class="input-group-text">
@@ -98,11 +98,11 @@
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
-                        
+
                         <div class="col-md-4 mb-3">
                             <label for="due_date" class="form-label">Due Date</label>
                             <div class="input-group">
-                                <input type="text" class="form-control flatpickr-datetime @error('due_date') is-invalid @enderror" 
+                                <input type="text" class="form-control flatpickr-date @error('due_date') is-invalid @enderror"
                                        id="due_date" name="due_date" value="{{ old('due_date') }}" placeholder="Select date & time">
                                 <span class="input-group-text">
                                     <i class="bi bi-calendar-event"></i>
@@ -113,12 +113,12 @@
                             @enderror
                         </div>
                     </div>
-                    
+
                     <!-- Charges -->
                     <div class="row">
                         <div class="col-md-4 mb-3">
                             <label for="product_name" class="form-label">Product Name</label>
-                            <input type="text" class="form-control @error('product_name') is-invalid @enderror" 
+                            <input type="text" class="form-control @error('product_name') is-invalid @enderror"
                                    id="product_name" name="product_name" value="{{ old('product_name', 'Supari Fali') }}" placeholder="Product name">
                             @error('product_name')
                                 <div class="invalid-feedback">{{ $message }}</div>
@@ -127,17 +127,17 @@
 
                         <div class="col-md-4 mb-3">
                             <label for="packaging_charge" class="form-label">Packaging Charge (₹)</label>
-                            <input type="text" class="form-control decimal-input @error('packaging_charge') is-invalid @enderror" 
+                            <input type="text" class="form-control decimal-input @error('packaging_charge') is-invalid @enderror"
                                    id="packaging_charge" name="packaging_charge" value="{{ old('packaging_charge') }}" placeholder="0.00"
                                    oninput="formatDecimal(this); calculateAllRows();">
                             @error('packaging_charge')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
-                        
+
                         <div class="col-md-4 mb-3">
                             <label for="hamali_charge" class="form-label">Hamali Charge (₹)</label>
-                            <input type="text" class="form-control decimal-input @error('hamali_charge') is-invalid @enderror" 
+                            <input type="text" class="form-control decimal-input @error('hamali_charge') is-invalid @enderror"
                                    id="hamali_charge" name="hamali_charge" value="{{ old('hamali_charge') }}" placeholder="0.00"
                                    oninput="formatDecimal(this); calculateAllRows();">
                             @error('hamali_charge')
@@ -145,7 +145,7 @@
                             @enderror
                         </div>
                     </div>
-                    
+
                     <!-- Particulars -->
                     <div class="row mb-3">
                         <h5>Particulars</h5>
@@ -167,25 +167,25 @@
                                         <tr class="particular-row">
                                             <td class="text-center">1</td>
                                             <td>
-                                                <input type="text" class="form-control text-center decimal-input bag-weight" 
+                                                <input type="text" class="form-control text-center decimal-input bag-weight"
                                                     name="per_bag_weight[]" value="" placeholder="0.00"
-                                                    oninput="formatDecimal(this); calculateRow(this);" 
+                                                    oninput="formatDecimal(this); calculateRow(this);"
                                                     onkeydown="handleParticularsKeydown(event, this)">
                                             </td>
                                             <td class="text-center">
-                                                <input type="text" class="form-control text-center bag-dis-weight" 
+                                                <input type="text" class="form-control text-center bag-dis-weight"
                                                     name="bag_dis_weight[]" value="" readonly>
                                             </td>
                                             <td class="text-center">
-                                                <input type="text" class="form-control text-center bag-rate" 
+                                                <input type="text" class="form-control text-center bag-rate"
                                                     name="bag_rate[]" value="" readonly>
                                             </td>
                                             <td class="text-center">
-                                                <input type="text" class="form-control text-center final-weight" 
+                                                <input type="text" class="form-control text-center final-weight"
                                                     name="final_weight[]" value="" readonly>
                                             </td>
                                             <td class="text-center">
-                                                <input type="text" class="form-control text-center amount" 
+                                                <input type="text" class="form-control text-center amount"
                                                     name="amount[]" value="" readonly>
                                             </td>
                                         </tr>
@@ -201,7 +201,7 @@
                                             <td></td>
                                             <td class="text-center">
                                                 <div class="d-flex justify-content-center align-items-center">
-                                                    <input type="text" class="form-control text-center" 
+                                                    <input type="text" class="form-control text-center"
                                                         id="totalWeight" name="total_weight" value="0.00" readonly>
                                                     <span class="ms-1">kg</span>
                                                 </div>
@@ -209,7 +209,7 @@
                                             <td class="text-center">
                                                 <div class="d-flex justify-content-center align-items-center">
                                                     <span>₹</span>
-                                                    <input type="text" class="form-control text-center ms-1" 
+                                                    <input type="text" class="form-control text-center ms-1"
                                                         id="totalAmount" name="total_amount" value="0.00" readonly>
                                                 </div>
                                             </td>
@@ -219,7 +219,7 @@
                             </div>
                         </div>
                     </div>
-                    
+
                     <!-- Amount Summary -->
                     <div class="row">
                         <div class="col-12">
@@ -259,7 +259,7 @@
                             </div>
                         </div>
                     </div>
-                    
+
                     <div class="d-flex justify-content-end gap-2 mt-4">
                         <a href="{{ route('orders.index') }}" class="btn btn-secondary">
                             <i class="bi bi-x-circle me-1"></i> Cancel
@@ -272,7 +272,7 @@
             </div>
         </div>
     </div>
-    
+
     <div class="col-lg-4">
         <div class="card shadow">
             <div class="card-header py-3">
@@ -349,11 +349,11 @@
             e.preventDefault();
 
             let isValid = true;
-        
+
             // Clear previous error states
             $('.form-control').removeClass('is-invalid');
             $('.invalid-feedback').remove();
-            
+
             // Validate first name
             if (!$('#first_name').val().trim()) {
                 $('#first_name').addClass('is-invalid');
@@ -504,9 +504,9 @@
         newRow.innerHTML = `
             <td class="text-center">${rowCount + 1}</td>
             <td>
-                <input type="text" class="form-control text-center decimal-input bag-weight" 
+                <input type="text" class="form-control text-center decimal-input bag-weight"
                     name="per_bag_weight[]" placeholder="0.00"
-                    oninput="formatDecimal(this); calculateRow(this);" 
+                    oninput="formatDecimal(this); calculateRow(this);"
                     onkeydown="handleParticularsKeydown(event, this)">
             </td>
             <td class="text-center"><input type="text" class="form-control text-center bag-dis-weight" readonly></td>
@@ -520,7 +520,7 @@
     // Form validation
     document.getElementById('orderForm').addEventListener('submit', function(e) {
         let isValid = true;
-        
+
         // Clear previous error states
         document.querySelectorAll('.form-control').forEach(input => {
             input.classList.remove('is-invalid');
@@ -528,43 +528,43 @@
         document.querySelectorAll('.invalid-feedback').forEach(el => {
             el.remove();
         });
-        
+
         // Validate required fields
         const requiredFields = ['customer_id', 'rate', 'discounted_bag_weight', 'order_date'];
-        
+
         requiredFields.forEach(field => {
             const element = document.getElementById(field);
             if (!element.value) {
                 element.classList.add('is-invalid');
-                
+
                 const feedback = document.createElement('div');
                 feedback.className = 'invalid-feedback';
                 feedback.textContent = 'This field is required.';
-                
+
                 element.parentNode.appendChild(feedback);
                 isValid = false;
             }
         });
-        
+
         // Validate numeric fields
         const numericFields = ['rate', 'discounted_bag_weight'];
-        
+
         numericFields.forEach(field => {
             const element = document.getElementById(field);
             const value = parseFloat(element.value);
-            
+
             if (isNaN(value) || value < 0) {
                 element.classList.add('is-invalid');
-                
+
                 const feedback = document.createElement('div');
                 feedback.className = 'invalid-feedback';
                 feedback.textContent = 'Please enter a valid positive number.';
-                
+
                 element.parentNode.appendChild(feedback);
                 isValid = false;
             }
         });
-        
+
         // Validate at least one bag has weight
         let hasValidBags = false;
         document.querySelectorAll('.bag-weight').forEach(input => {
@@ -572,20 +572,20 @@
                 hasValidBags = true;
             }
         });
-        
+
         if (!hasValidBags) {
             // Show error message
             const firstBagInput = document.querySelector('.bag-weight');
             firstBagInput.classList.add('is-invalid');
-            
+
             const feedback = document.createElement('div');
             feedback.className = 'invalid-feedback';
             feedback.textContent = 'At least one bag must have weight.';
-            
+
             firstBagInput.parentNode.appendChild(feedback);
             isValid = false;
         }
-        
+
         if (!isValid) {
             e.preventDefault();
             // Scroll to first error

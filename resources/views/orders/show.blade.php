@@ -29,7 +29,7 @@
                             <strong>Order Number:</strong><br>
                             <span class="text-muted">{{ $order->order_number }}</span>
                         </div>
-                        
+
                         <div class="mb-3">
                             <strong>Customer:</strong><br>
                             <a href="{{ route('customers.show', $order->customer) }}" class="text-decoration-none">
@@ -56,19 +56,19 @@
                                 </div>
                             </a>
                         </div>
-                        
+
                         <div class="mb-3">
                             <strong>Product Name:</strong><br>
                             <span class="text-muted">{{ $order->product_name }}</span>
                         </div>
                     </div>
-                    
+
                     <div class="col-md-6">
                         <div class="mb-3">
                             <strong>Order Date:</strong><br>
-                            <span class="text-muted">{{ $order->order_date?->format('M d, Y h:i A') }}</span>
+                            <span class="text-muted">{{ $order->order_date?->format('M d, Y') }}</span>
                         </div>
-                        
+
                         <div class="mb-3">
                             <strong>Due Date:</strong><br>
                             <span class="text-muted">
@@ -86,7 +86,7 @@
                 </div>
             </div>
         </div>
-        
+
         <!-- Product Details Card -->
         <div class="card shadow mb-4">
             <div class="card-header py-3">
@@ -121,7 +121,7 @@
                 </div>
             </div>
         </div>
-        
+
         <!-- Amount Breakdown Card -->
         <div class="card shadow mb-4">
             <div class="card-header py-3">
@@ -152,7 +152,7 @@
             </div>
         </div>
     </div>
-    
+
     <div class="col-lg-4">
         <!-- Quick Actions Card -->
         <div class="card shadow mb-4">
@@ -183,7 +183,7 @@
                     <strong>Created:</strong><br>
                     <span class="text-muted">{{ $order->created_at->format('M d, Y \a\t h:i A') }}</span>
                 </div>
-                
+
                 <div class="mb-3">
                     <strong>Last Updated:</strong><br>
                     <span class="text-muted">{{ $order->updated_at->format('M d, Y \a\t h:i A') }}</span>
@@ -242,7 +242,7 @@
                                 <td class="text-center">
                                     <div class="d-flex justify-content-center align-items-center">
                                         <span>₹</span>
-                                        <input type="text" class="form-control text-center ms-1" 
+                                        <input type="text" class="form-control text-center ms-1"
                                             id="totalAmount" name="total_amount" value="{{ number_format($order->total_weight * $order->rate, 2) }}" readonly>
                                     </div>
                                 </td>

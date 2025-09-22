@@ -39,9 +39,9 @@
                     </div>
                     <h5 class="mt-2 mb-0">{{ $customer->first_name }} {{ $customer->last_name }}</h5>
                 </div>
-                
+
                 <hr>
-                
+
                 <div class="mb-3">
                     <strong><i class="bi bi-envelope me-2"></i>Email:</strong><br>
                     @if($customer->email)
@@ -52,7 +52,7 @@
                         <span class="text-muted">No email provided</span>
                     @endif
                 </div>
-                
+
                 <div class="mb-3">
                     <strong><i class="bi bi-telephone me-2"></i>Phone:</strong><br>
                     @if($customer->phone)
@@ -63,7 +63,7 @@
                         <span class="text-muted">No phone provided</span>
                     @endif
                 </div>
-                
+
                 <div class="mb-3">
                     <strong><i class="bi bi-geo-alt me-2"></i>Address:</strong><br>
                     @if($customer->address)
@@ -72,14 +72,14 @@
                         <span class="text-muted">No address provided</span>
                     @endif
                 </div>
-                
+
                 <div class="mb-3">
                     <strong><i class="bi bi-calendar me-2"></i>Member Since:</strong><br>
                     <span class="text-muted">{{ $customer->created_at->format('M d, Y') }}</span>
                 </div>
             </div>
         </div>
-        
+
         <!-- Quick Actions Card -->
         <div class="card shadow">
             <div class="card-header py-3">
@@ -103,7 +103,7 @@
             </div>
         </div>
     </div>
-    
+
     <div class="col-lg-8">
         <!-- Orders Card -->
         <div class="card shadow mb-4">
@@ -150,7 +150,7 @@
                                             @endif
                                         </small>
                                     </td>
-                                    <td>{{ $order->order_date?->format('M d, Y h:i A') }}</td>
+                                    <td>{{ $order->order_date?->format('M d, Y') }}</td>
                                 </tr>
                                 @endforeach
                             </tbody>
@@ -167,7 +167,7 @@
                 @endif
             </div>
         </div>
-        
+
         <!-- Payments Card -->
         <div class="card shadow">
             <div class="card-header py-3 d-flex justify-content-between align-items-center">

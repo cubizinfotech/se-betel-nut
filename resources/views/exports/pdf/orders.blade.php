@@ -50,8 +50,8 @@
                 <td>{{ number_format($order->packaging_charge, 2) }}</td>
                 <td>{{ number_format($order->hamali_charge, 2) }}</td>
                 <td>₹{{ number_format($order->grand_amount, 2) }}</td>
-                <td>{{ $order->order_date?->format('Y-m-d h:i A') }}</td>
-                <td>{{ $order->due_date?->format('Y-m-d h:i A') }}</td>
+                <td>{{ $order->order_date?->format('Y-m-d') }}</td>
+                <td>{{ $order->due_date?->format('Y-m-d') }}</td>
                 <td>{{ $order->created_at?->format('Y-m-d h:i A') }}</td>
             </tr>
             @endforeach

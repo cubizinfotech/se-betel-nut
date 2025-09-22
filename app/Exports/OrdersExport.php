@@ -64,8 +64,8 @@ class OrdersExport implements FromCollection, WithHeadings, WithMapping, WithSty
             number_format($order->packaging_charge, 2),
             number_format($order->hamali_charge, 2),
             '₹ ' . number_format($order->grand_amount, 2),
-            $order->order_date?->format('Y-m-d h:i A'),
-            $order->due_date?->format('Y-m-d h:i A'),
+            $order->order_date?->format('Y-m-d'),
+            $order->due_date?->format('Y-m-d'),
             $order->created_at?->format('Y-m-d h:i A'),
         ];
     }
