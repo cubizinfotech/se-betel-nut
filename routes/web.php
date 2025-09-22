@@ -44,5 +44,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::resource('payments', PaymentController::class);
     Route::get('/payments/export/{type}', [PaymentController::class, 'export'])->name('payments.export');
+
     Route::resource('ledgers', LedgersController::class);
+    Route::post('/ledgers/fetch', [LedgersController::class, 'fetch'])->name('ledgers.fetch');
 });

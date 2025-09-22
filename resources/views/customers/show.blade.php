@@ -87,6 +87,9 @@
             </div>
             <div class="card-body">
                 <div class="d-grid gap-2">
+                    <a href="{{ route('ledgers.index', ['customer' => $customer->id]) }}" class="btn btn-danger">
+                        <i class="bi bi-journal-bookmark me-1"></i> Show Ledgers
+                    </a>
                     <a href="{{ route('orders.create', ['customer_id' => $customer->id]) }}" class="btn btn-primary">
                         <i class="bi bi-cart-plus me-1"></i> Create New Order
                     </a>
