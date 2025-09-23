@@ -2,15 +2,26 @@
 function toggleSidebar() {
     const sidebar = document.getElementById("sidebar");
     const mainContent = document.getElementById("main-content");
+    const isMobile = window.matchMedia("(max-width: 768px)").matches;
 
-    if (sidebar && mainContent) {
-        sidebar.classList.toggle("collapsed");
-        mainContent.classList.toggle("expanded");
+    if (!sidebar || !mainContent) return;
 
-        // Store sidebar state in localStorage
-        const isCollapsed = sidebar.classList.contains("collapsed");
-        localStorage.setItem("sidebarCollapsed", isCollapsed);
+    if (isMobile) {
+        // On mobile behave like off-canvas
+        sidebar.classList.toggle("show");
+        document.body.classList.toggle("sidebar-open");
+        const backdrop = document.getElementById("sidebar-backdrop");
+        if (backdrop) backdrop.classList.toggle("show");
+        // Do not store collapsed state for mobile
+        return;
     }
+
+    // Desktop/tablet collapse
+    sidebar.classList.toggle("collapsed");
+    mainContent.classList.toggle("expanded");
+
+    const isCollapsed = sidebar.classList.contains("collapsed");
+    localStorage.setItem("sidebarCollapsed", isCollapsed);
 }
 
 // Load sidebar state from localStorage
@@ -18,12 +29,14 @@ function loadSidebarState() {
     const sidebar = document.getElementById("sidebar");
     const mainContent = document.getElementById("main-content");
     const isCollapsed = localStorage.getItem("sidebarCollapsed") === "true";
+    const isMobile = window.matchMedia("(max-width: 768px)").matches;
 
-    if (sidebar && mainContent) {
-        if (isCollapsed) {
-            sidebar.classList.add("collapsed");
-            mainContent.classList.add("expanded");
-        }
+    if (!sidebar || !mainContent) return;
+
+    // Ignore persisted collapse on mobile
+    if (!isMobile && isCollapsed) {
+        sidebar.classList.add("collapsed");
+        mainContent.classList.add("expanded");
     }
 }
 
@@ -44,6 +57,37 @@ document.addEventListener("DOMContentLoaded", function () {
     } else {
         console.log("Navbar toggle button NOT found");
     }
+
+    // Create mobile backdrop if not present
+    if (!document.getElementById("sidebar-backdrop")) {
+        const backdrop = document.createElement("div");
+        backdrop.id = "sidebar-backdrop";
+        backdrop.className = "sidebar-backdrop";
+        document.body.appendChild(backdrop);
+        backdrop.addEventListener("click", () => {
+            const sidebar = document.getElementById("sidebar");
+            if (sidebar && sidebar.classList.contains("show")) {
+                toggleSidebar();
+            }
+        });
+    }
+
+    // Close mobile sidebar on resize to desktop
+    window.addEventListener("resize", () => {
+        const sidebar = document.getElementById("sidebar");
+        const mainContent = document.getElementById("main-content");
+        const backdrop = document.getElementById("sidebar-backdrop");
+        const isMobile = window.matchMedia("(max-width: 768px)").matches;
+        if (!isMobile && sidebar) {
+            sidebar.classList.remove("show");
+            document.body.classList.remove("sidebar-open");
+            if (backdrop) backdrop.classList.remove("show");
+            // Ensure main content respects collapsed state
+            const collapsed = localStorage.getItem("sidebarCollapsed") === "true";
+            mainContent?.classList.toggle("expanded", collapsed);
+            sidebar.classList.toggle("collapsed", collapsed);
+        }
+    });
 });
 
 // Theme Toggle

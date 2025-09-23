@@ -14,8 +14,14 @@
 </div>
 
 <!-- Search and Filter Card -->
-<div class="card shadow mb-4">
-    <div class="card-body">
+<div class="card shadow mb-4 position-relative">
+    <div class="card-header d-flex justify-content-center align-items-center d-md-none position-relative">
+        <span class="fw-semibold">Filters</span>
+        <button class="filter-toggle filter-icon" type="button" data-bs-toggle="collapse" data-bs-target="#paymentsFilter" aria-expanded="false" aria-controls="paymentsFilter" title="Toggle Filters">
+            <i class="bi bi-funnel"></i>
+        </button>
+    </div>
+    <div id="paymentsFilter" class="card-body collapse d-md-block">
         <form method="GET" action="{{ route('payments.index') }}" class="row g-3">
             <div class="col-md-2">
                 <label for="search" class="form-label">Search Payments</label>
@@ -54,16 +60,16 @@
                 <input type="text" class="form-control flatpickr-date" id="date_to" name="date_to" 
                        value="{{ request('date_to') }}" placeholder="Select end date">
             </div>
-            <div class="col-md-1">
-                <label class="form-label">&nbsp;</label>
+            <div class="col-6 col-md-1">
+                <label class="form-label d-none d-md-block">&nbsp;</label>
                 <div class="d-grid">
                     <button type="submit" class="btn btn-outline-primary">
                         <i class="bi bi-search me-1"></i> Search
                     </button>
                 </div>
             </div>
-            <div class="col-md-1">
-                <label class="form-label">&nbsp;</label>
+            <div class="col-6 col-md-1">
+                <label class="form-label d-none d-md-block">&nbsp;</label>
                 <div class="d-grid">
                     <a href="{{ route('payments.index') }}" class="btn btn-outline-secondary">
                         <i class="bi bi-arrow-clockwise me-1"></i> Reset

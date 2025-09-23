@@ -16,25 +16,31 @@
     </div>
 
 <!-- Search and Filter Card -->
-<div class="card shadow mb-4">
-    <div class="card-body">
-        <form method="GET" action="{{ route('customers.index') }}" class="row g-3 justify-content-center">
+<div class="card shadow mb-4 position-relative">
+    <div class="card-header d-flex justify-content-center align-items-center d-md-none position-relative">
+        <span class="fw-semibold">Filters</span>
+        <button class="filter-toggle filter-icon" type="button" data-bs-toggle="collapse" data-bs-target="#customersFilter" aria-expanded="false" aria-controls="customersFilter" title="Toggle Filters">
+            <i class="bi bi-funnel"></i>
+        </button>
+    </div>
+    <div id="customersFilter" class="card-body collapse d-md-block">
+        <form method="GET" action="{{ route('customers.index') }}" class="row g-3">
             <div class="col-md-10">
                 <label for="search" class="form-label">Search Customers</label>
                 <input type="text" class="form-control" id="search" name="search" 
                        value="{{ request('search') }}" placeholder="Search by name, email, or phone...">
             </div>
-            <div class="col-md-1">
-                <label class="form-label">&nbsp;&nbsp;&nbsp;</label>
-                <div class="">
+            <div class="col-6 col-md-1">
+                <label class="form-label d-none d-md-block">&nbsp;</label>
+                <div class="d-grid">
                     <button type="submit" class="btn btn-outline-primary">
                         <i class="bi bi-search me-1"></i> Search
                     </button>
                 </div>
             </div>
-            <div class="col-md-1">
-                <label class="form-label">&nbsp;&nbsp;&nbsp;</label>
-                <div class="">
+            <div class="col-6 col-md-1">
+                <label class="form-label d-none d-md-block">&nbsp;</label>
+                <div class="d-grid">
                     <a href="{{ route('customers.index') }}" class="btn btn-outline-secondary">
                         <i class="bi bi-arrow-clockwise me-1"></i> Reset
                     </a>

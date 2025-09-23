@@ -25,8 +25,14 @@
 
     <div class="col-lg-9">
         <!-- Search and Filter Card -->
-        <div class="card shadow">
-            <div class="card-body">
+        <div class="card shadow position-relative">
+            <div class="card-header d-flex justify-content-center align-items-center d-md-none position-relative">
+                <span class="fw-semibold">Filters</span>
+                <button class="filter-toggle filter-icon" type="button" data-bs-toggle="collapse" data-bs-target="#ledgersFilter" aria-expanded="false" aria-controls="ledgersFilter" title="Toggle Filters">
+                    <i class="bi bi-funnel"></i>
+                </button>
+            </div>
+            <div id="ledgersFilter" class="card-body collapse d-md-block">
                 <form method="GET" action="{{ route('ledgers.index') }}" class="row g-3" id="ledgerFilterForm" autocomplete="off">
                     <div class="col-md-4">
                         <label for="customer_id" class="form-label required"><b>Customer</b></label>
@@ -52,16 +58,16 @@
                         <input type="text" class="form-control flatpickr-date" id="date_to" name="date_to" 
                             value="{{ request('date_to') }}" placeholder="Select end date">
                     </div>
-                    <div class="col-md-2">
-                        <label class="form-label">&nbsp;</label>
+                    <div class="col-6 col-md-2">
+                        <label class="form-label d-none d-md-block">&nbsp;</label>
                         <div class="d-grid">
                             <button type="submit" class="btn btn-outline-primary">
                                 <i class="bi bi-search me-1"></i> Find
                             </button>
                         </div>
                     </div>
-                    <div class="col-lg-2">
-                        <label class="form-label">&nbsp;</label>
+                    <div class="col-6 col-lg-2">
+                        <label class="form-label d-none d-md-block">&nbsp;</label>
                         <div class="d-grid">
                             <a href="{{ route('ledgers.index') }}" class="btn btn-outline-secondary">
                                 <i class="bi bi-arrow-clockwise me-1"></i> Reset

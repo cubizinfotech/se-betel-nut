@@ -44,6 +44,8 @@ body {
     z-index: 1000;
     overflow: hidden;
     display: flex;
+    /* Explicit width so collapsed state can shrink properly */
+    width: 250px;
 }
 
 .sidebar.collapsed .sidebar-text {
@@ -61,6 +63,11 @@ body {
 .sidebar.collapsed .user-name,
 .sidebar.collapsed .user-role {
     display: none;
+}
+
+/* Shrink sidebar width on collapse for desktop/tablet */
+.sidebar.collapsed {
+    width: 70px;
 }
 
 .sidebar.collapsed .logout-btn .sidebar-text {
@@ -853,10 +860,42 @@ body {
     }
 }
 
+/* Backdrop when sidebar is open on mobile */
+.sidebar-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.35);
+    z-index: 999;
+    display: none;
+}
+
+.sidebar-backdrop.show { display: block; }
+
+/* Mobile filter toggle button placement */
+.filter-toggle {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.75rem;
+}
+
+.filter-icon {
+    background: transparent;
+    border: none;
+    color: var(--primary-color);
+    width: 32px;
+    height: 32px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    padding: 0;
+}
+
+.filter-icon:hover {
+    background: var(--secondary-color);
+}
+
 @media (max-width: 576px) {
-    .sidebar {
-        width: 100% !important;
-    }
 
     .main-content {
         margin-left: 0 !important;
