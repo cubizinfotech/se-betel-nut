@@ -1,214 +1,234 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="utf-8">
-    <title>Estimate Bill</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Estimate - A4 Invoice</title>
     <style>
         @page {
             size: A4;
-            margin: 20mm;
+            margin-top: 13mm;
+            margin-bottom: 13mm;
         }
 
         body {
-            font-family: "Arial", sans-serif;
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 12px;
             margin: 0;
-            background: #f9f9f9;
-            color: #222;
+            padding: 0;
+            background-color: #FFFFFF;
         }
 
-        .container {
-            max-width: 800px;
+        .sheet {
+            /* width: 210mm;
+      min-height: 297mm; */
+            /* padding: 15mm; */
             margin: auto;
-            background: #fff;
-            padding: 20px 30px;
-            border: 2px solid #000;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            box-sizing: border-box;
         }
 
-        /* Header */
-        .header {
-            text-align: center;
-            border-bottom: 2px solid #000;
-            padding-bottom: 10px;
-            margin-bottom: 15px;
-            position: relative;
-        }
-
-        .header img {
-            width: 60px;
-            height: auto;
-            position: absolute;
-            left: 20px;
-            top: 5px;
-        }
-
-        .header h1 {
-            font-size: 20px;
-            margin: 0;
-        }
-
-        .header h2 {
-            font-size: 24px;
-            margin: 5px 0 0;
-            font-weight: bold;
-            color: #d35400;
-        }
-
-        /* Meta info */
-        .meta {
-            display: flex;
-            justify-content: space-between;
-            font-size: 14px;
-            margin-bottom: 15px;
-        }
-
-        /* Table */
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-bottom: 15px;
-            font-size: 13px;
         }
 
-        table th,
-        table td {
+        td,
+        th {
             border: 1px solid #000;
-            padding: 6px 8px;
+            padding: 6px;
+            vertical-align: top;
+            vertical-align: middle;
+        }
+
+        .no-border td,
+        .no-border th {
+            border: none;
+        }
+
+        .title {
+            font-weight: bold;
+            font-size: 18px;
             text-align: center;
         }
 
-        table th {
-            background: #f1f1f1;
-            font-weight: bold;
+        .right {
+            text-align: right;
+        }
+
+        .center {
+            text-align: center;
         }
 
         .particulars {
-            text-align: left;
-            font-family: "Courier New", monospace;
-            white-space: pre-wrap;
+            font-family: 'Courier New', monospace;
+            font-size: 10px;
+            /* white-space: pre-wrap; */
+            line-height: 1.2;
         }
 
-        /* Totals */
-        .totals-box {
-            border: 2px solid #000;
-            max-width: 350px;
-            margin-left: auto;
-            margin-top: 15px;
-            font-size: 14px;
-        }
-
-        .totals-box .row {
-            display: flex;
-            justify-content: space-between;
-            padding: 6px 10px;
-            border-bottom: 1px solid #ccc;
-        }
-
-        .totals-box .row:last-child {
-            border-bottom: none;
-        }
-
-        .totals-box .label {
-            font-weight: bold;
-        }
-
-        .totals-box .grand {
-            background: #f1c40f;
-            font-size: 16px;
-            font-weight: bold;
-            color: #000;
-            border-top: 2px solid #000;
-        }
-
-        /* Footer */
-        .footer {
-            border-top: 2px solid #000;
-            margin-top: 30px;
-            padding-top: 10px;
-            text-align: center;
+        .particulars p span {
             font-size: 12px;
-            color: #555;
+            width: 35px;
+            display: inline-block;
+            border: 1px solid #ddd;
+            padding: 3px;
+            margin: 0 0 2px;
+            text-align: center;
+            line-height: 12px;
+        }
+
+        .particulars p span.total {
+            background: #ddd;
+        }
+
+        .top_wrapper tr td {
+            font-size: 20px;
+        }
+
+        p {
+            margin: 0;
+        }
+
+        .main_table tr td {
+            vertical-align: top;
         }
     </style>
 </head>
 
 <body>
-    <div class="container">
-        <!-- Header -->
-        <div class="header">
-            <img src="ganesha.png" alt="Logo">
-            <h1>श्री गणेशाय नमः</h1>
-            <h2>ESTIMATE</h2>
-        </div>
+    <div class="sheet">
+        <table class="no-border" style="background: #000;">
+            <tr>
+                <td style="padding: 0;">
+                    <table class="no-border top_wrapper">
+                        <tr>
+                            <td class="center"
+                                style="padding:10px; color:#fff; border-bottom:1px solid #272727;">
+                                <span>Shree Ganesha Namah</span>
+                            </td>
 
-        <!-- Meta info -->
-        <div class="meta">
-            <div>
-                <strong>SR No:</strong> 632<br>
-                <strong>To:</strong> D DA
-            </div>
-            <div>
-                <strong>Date:</strong> 28/08/2025<br>
-                <strong>Branch:</strong> SELF
-            </div>
-        </div>
+                        </tr>
+                    </table>
+                    <table class="no-border" style="border-bottom: 1px solid #000; color: #fff;">
+                        <tr>
+                            <td style="width: 33.333%; color: #fff;">SR No <strong>{{ $order->id }}</strong></td>
+                            <td class="title center" style="width: 33.333%; color: #fff;">ESTIMATE</td>
+                            <td class="right" style="width: 33.333%; color: #fff;">
+                                <p style="margin: 0 0 5px;">Date: <strong>28/08/2025</strong></p>
+                                <p>Branch: <strong>{{ $order->order_number }}</strong></p>
+                            </td>
+                        </tr>
+                    </table>
 
-        <div class="meta">
-            <div>
-                <strong class="margin-bottom:10px">A/C:</strong> ----<br>
-                <strong>Garage:</strong> ----
-            </div>
-            <div><strong>LR No:</strong> ----</div>
-        </div>
 
-        <!-- Table -->
-        <table>
-            <thead>
-                <tr>
-                    <th style="width:50%;">Particulars</th>
-                    <th>Bag</th>
-                    <th>Net Wt.</th>
-                    <th>Rate</th>
-                    <th>Amount</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td class="particulars">
-                        SUPARI FALI<br>
-                        50.6 49.3 50.1 49.6 49.5 50.0<br>
-                        50.3 49.4 50.1 50.1<br>
-                        50.3 50.3 49.5 49.1 50.7 50.3<br>
-                        49.9 50.1 50.1<br>
-                        49.1 49.7 50.0 50.0 50.6 50.5<br>
-                        50.0 50.0 49.8 50.5<br>
-                        49.2 50.3 50.4 49.7 49.2 50.3<br>
-                        50.3 49.9 50.4 49.9<br>
-                        50.0 50.2 49.4 50.6 49.3 49.3<br>
-                        50.3 49.0 50.6 49.2 -10.0=2487
-                    </td>
-                    <td>50</td>
-                    <td>2487.0</td>
-                    <td>310.00</td>
-                    <td>770970.00</td>
-                </tr>
-            </tbody>
+                </td>
+            </tr>
         </table>
 
-        <!-- Totals -->
-        <div class="totals-box">
-            <div class="row"><span class="label">Sub Total:</span> <span>₹ 5,385,475.00</span></div>
-            <div class="row"><span class="label">Packaging Charge:</span> <span>₹ 2,000.00</span></div>
-            <div class="row"><span class="label">Hanali Charge:</span> <span>₹ 1,000.00</span></div>
-            <div class="row grand"><span class="label">Grand Total:</span> <span>₹ 5,388,475.00</span></div>
-        </div>
+        <table class="no-border" style="margin-top:10px; background: #f3f3f3;">
+            <tr>
+                <td>
+                    <p style="margin-bottom: 5px;">To, <strong>{{ $order->customer->first_name }}
+                            {{ $order->customer->last_name }}</strong></p>
+                    <p>A/C: <strong>{{ $order->customer->id }}</strong></p>
+                </td>
+                <td class="right">
+                    <p style="margin-bottom: 5px;">GARAGE: <strong> </strong></p>
+                    <p>LR. NO: <strong>{{ $order->lot_number }}</strong></p>
+                </td>
+            </tr>
+        </table>
 
-        <!-- Footer -->
-        <div class="footer">
-            Payment condition within 3 days<br>
-            This is a computer-generated estimate
-        </div>
+
+        <table style="margin-top:10px; border-collapse: separate;" class="main_table">
+            <tr>
+                <th style="background: #000; color: #fff;">Particulars</th>
+                <th style="background: #000; color: #fff; width: 50px;"">Bag</th>
+        <th style=" background: #000; color: #fff; width: 60px;"">Net.Wt.</th>
+                <th style="background: #000; color: #fff; width: 70px;"">Rate</th>
+        <th style=" background: #000; color: #fff; width: 110px;">Amount</th>
+            </tr>
+            <tr>
+                <td class="particulars" style="background: #f3f3f3;">
+                    <p style="font-size: 14px; margin: 0 0 5px;">{{ strtoupper($order->product_name) }}</p>
+                    @php
+                        // Parse the per_bag_weight JSON and display weights
+                        $perBagWeights = json_decode($order->per_bag_weight, true);
+                        $totalWeight = 0;
+                        $bagCount = 0;
+                    @endphp
+
+                    @if($perBagWeights && is_array($perBagWeights))
+                        @foreach($perBagWeights as $weight)
+                            @php
+                                $bagCount++;
+                                $totalWeight += floatval($weight);
+                            @endphp
+                            @if($bagCount % 10 == 1)
+                                <p style="margin: 0 0 5px;">
+                            @endif
+
+                                <span>{{ number_format($weight, 1) }}</span>
+
+                                @if($bagCount % 10 == 0 || $loop->last)
+                                        @if($loop->last)
+                                            = <span class="total">{{ number_format($totalWeight, 1) }}</span>
+                                        @endif
+                                    </p>
+                                @endif
+                        @endforeach
+                    @else
+                        <p style="margin: 0 0 5px;">
+                            <span class="total">{{ number_format($order->total_weight, 1) }}</span>
+                        </p>
+                    @endif
+                </td>
+                <td class="center" style="background: #f3f3f3;">{{ $order->quantity }}</td>
+                <td class="center" style="background: #f3f3f3;">{{ number_format($order->total_weight, 1) }}</td>
+                <td class="center" style="background: #f3f3f3;">{{ number_format($order->rate, 2) }}</td>
+                <td class="right" style="background: #f3f3f3;">{{ number_format($order->total_amount, 2) }}</td>
+            </tr>
+            <tr>
+                <td style="border: 0;"></td>
+                <td colspan="3" style="background: #f3f3f3;">
+                    Sub Total
+                </td>
+                <td class="right" style="background: #f3f3f3;">
+                    {{ number_format($order->total_amount, 2) }}
+                </td>
+            </tr>
+            <tr>
+                <td style="border: 0;"></td>
+                <td colspan="3" style="background: #f3f3f3;">Packaging Charge</td>
+                <td class="right" style="background: #f3f3f3;">{{ number_format($order->packaging_charge, 2) }}</td>
+            </tr>
+            <tr>
+                <td style="border: 0;"></td>
+                <td colspan="3" style="background: #f3f3f3;">Hanali Charge</td>
+                <td class="right" style="background: #f3f3f3;">{{ number_format($order->hamali_charge, 2) }}</td>
+            </tr>
+            <tr>
+                <td style="border: 0;"></td>
+                <td colspan="3" style="background: #f9c600; font-size: 14px; font-weight: 600;">Grand Total</td>
+                <td class="right" style="background: #f9c600; font-size: 14px; font-weight: 600;">
+                    <strong>{{ number_format($order->grand_amount, 2) }}</strong>
+                </td>
+            </tr>
+            <!-- <tr>
+        <td colspan="4" class="right"><strong>Total</strong></td>
+        <td class="right"><strong>5385475.0</strong></td>
+      </tr> -->
+        </table>
+
+        <table class="no-border" style="margin-top:20px;">
+            <tr>
+                <td class="center">
+                    <p>Payment condition within 3 days</p>
+                    <p>This is a computer-generated estimate</p>
+                </td>
+            </tr>
+        </table>
     </div>
 </body>
 
