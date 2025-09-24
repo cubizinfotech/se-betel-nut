@@ -107,7 +107,7 @@ class OrderController extends Controller
     public function show(Order $order)
     {
         $this->authorize('view', $order);
-        
+
         $order->load(['customer'/* , 'user' */]);
 
         return view('orders.show', compact('order'));
@@ -116,7 +116,7 @@ class OrderController extends Controller
     public function edit(Order $order)
     {
         $this->authorize('update', $order);
-        
+
         $customers = Customer::where('user_id', auth()->id())
             ->orderBy('first_name')
             ->get();
@@ -176,7 +176,7 @@ class OrderController extends Controller
     public function destroy(Order $order)
     {
         $this->authorize('delete', $order);
-        
+
         $order->delete();
 
         return redirect()->route('orders.index')
@@ -186,10 +186,11 @@ class OrderController extends Controller
     public function bill_pdf(Order $order)
     {
         $this->authorize('view', $order);
-        
+
         $order->load(['customer']);
 
         // echo '<pre>'; print_r($order->toArray()); echo '</pre>'; exit;
+        // return view ('orders.bill_pdf', compact('order'));
 
         $pdf = Pdf::loadView('orders.bill_pdf', compact('order'))->setPaper('a4', 'portrait');
 
