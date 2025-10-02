@@ -4,6 +4,8 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Gujarati&display=swap" rel="stylesheet">
+
     <title>Estimate - A4 Invoice</title>
     <style>
         @page {
@@ -11,6 +13,9 @@
             margin-top: 13mm;
             margin-bottom: 13mm;
         }
+        /* body {
+    font-family: 'Noto Sans Gujarati', 'Shruti', sans-serif;
+} */
 
         body {
             font-family: Arial, Helvetica, sans-serif;
@@ -83,7 +88,7 @@
         }
 
         .top_wrapper tr td {
-            font-size: 20px;
+            font-size: 16px;
         }
 
         p {
@@ -104,68 +109,72 @@
                     <table class="no-border top_wrapper" style="background: #000;">
                         <tr>
                             <td class="center"
-                                style="padding:10px; color:#fff; border-bottom:1px solid #272727;">
-                                <span>Shree Ganesha Namah</span>
+                                style="padding:5px; color:#fff; border-bottom:1px solid #272727;">
+                                <span style="font-size:10px"><img src="{{ public_path('img/Screenshot_2.png') }}" style="width:100px;padding-top:4px; height:auto;">
+                                </span>
                             </td>
                         </tr>
+                        <tr style="border-bottom: 1px solid #000; color: #fff; background: #000;">
+                            <td class="title center" style="width: 33.333%; color: #fff; font-size:10px">ESTIMATE</td>
+                        </tr>
                     </table>
-                    <br>
-                    <table class="no-border" style="border-bottom: 1px solid #000; color: #fff; background: #000;">
+                    {{-- <br> --}}
+                    {{-- <table class="no-border" style="border-bottom: 1px solid #000; color: #fff; background: #000;">
                         <tr>
                             <td class="title center" style="width: 33.333%; color: #fff;">ESTIMATE</td>
                         </tr>
-                    </table>
+                    </table> --}}
                 </td>
             </tr>
         </table>
 
-        <table class="no-border" style="margin-top:10px; background: #f3f3f3;">
+        <table class="no-border" style="margin-top:3px; background: #f3f3f3;">
             <tr>
                 <td>
-                    <p style="margin-bottom: 5px;">SR. No: <strong>{{ $order->id }}</strong></p>
+                    <p style="margin-bottom: 3px;">SR. No: <strong>{{ $order->id }}</strong></p>
                     <p>To: <strong>{{ $order->customer->first_name }} {{ $order->customer->last_name }}</strong></p>
                 </td>
                 <td class="right">
-                    <p style="margin-bottom: 5px; text:start;">Date: <strong>{{ \Carbon\Carbon::parse($order->order_date)->format('d/m/Y') }}</strong></p>
+                    <p style="margin-bottom: 3px; text:start;">Date: <strong>{{ \Carbon\Carbon::parse($order->order_date)->format('d/m/Y') }}</strong></p>
                     <p style="margin-right:7px;">Time: <strong>{{ \Carbon\Carbon::parse($order->created_at)->format('h:i A') }}</strong></p>
                 </td>
             </tr>
         </table>
 
-        <table class="no-border" style="margin-top:10px; background: #f3f3f3;">
+        <table class="no-border" style="margin-top:5px; background: #f3f3f3;">
             <tr>
                 <td>
-                    <p style="margin-bottom: 5px;">A/C:- ______________________</p>
+                    <p style="margin-bottom: 3px;">A/C:- ______________________</p>
                     <p>GARAGE:- ______________________</p>
                 </td>
                 <td class="right">
-                    <p style="margin-bottom: 5px;">Br.: <strong>SELF</strong></p>
+                    <p style="margin-bottom: 3px;">Br.: <strong>SELF</strong></p>
                     <p>LR. NO: <strong>{{ $order->lot_number ?? $order->order_number }}</strong></p>
                 </td>
             </tr>
         </table>
 
-        <table style="margin-top:10px; border-collapse: separate;" class="main_table">
+        <table style="margin-top:3px; border-collapse: separate;" class="main_table">
             <tr>
                 <th style="background: #000; color: #fff;">Particulars</th>
-                <th style="background: #000; color: #fff; width: 50px;"">Bag</th>
-        <th style=" background: #000; color: #fff; width: 60px;"">Net.Wt.</th>
-                <th style="background: #000; color: #fff; width: 70px;"">Rate</th>
+                <th style="background: #000; color: #fff; width: 50px;">Bag</th>
+        <th style=" background: #000; color: #fff; width: 60px;">Net.Wt.</th>
+                <th style="background: #000; color: #fff; width: 70px;">Rate</th>
         <th style=" background: #000; color: #fff; width: 110px;">Amount</th>
             </tr>
             <tr>
                 <td class="particulars" style="background: #f3f3f3;">
-                    <p style="font-size: 14px; margin: 0 0 5px;">{{ strtoupper($order->product_name) }}</p>
+                    <p style="font-size: 12px; margin: 0 0 4px;">{{ strtoupper($order->product_name) }}</p>
                     @php
                         $perBagWeights = json_decode($order->per_bag_weight, true);
                     @endphp
 
                     @if($perBagWeights && is_array($perBagWeights))
                         @foreach($perBagWeights as $weight)
-                            <span style="margin: 0 0 5px;">{{ number_format($weight, 1) }}</span>
-                            @if(!$loop->last)
-                                <strong>, </strong>
-                            @endif
+                            <span style="margin: 0 0 4px;font-size: 8px;line-height: 10px;border: 1px solid #ddd; width: 35px;">{{ number_format($weight, 1) }},</span>
+                            {{-- @if(!$loop->last)
+                                <strong>,</strong>
+                            @endif --}}
                         @endforeach
                     @endif
 
@@ -197,14 +206,14 @@
             </tr>
             <tr>
                 <td style="border: 0;"></td>
-                <td colspan="3" style="background: #f9c600; font-size: 14px; font-weight: 600;"><strong>Grand Total</strong></td>
-                <td class="right" style="background: #f9c600; font-size: 14px; font-weight: 600;">
+                <td colspan="3" style="background: #f9c600; font-size: 10px; font-weight: 600;"><strong>Grand Total</strong></td>
+                <td class="right" style="background: #f9c600; font-size: 10px; font-weight: 600;">
                     <strong>{{ number_format($order->grand_amount, 2) }}</strong>
                 </td>
             </tr>
         </table>
 
-        <table class="no-border" style="margin-top:20px;">
+        <table class="no-border" style="margin-top:2px;">
             <tr>
                 <td class="center">
                     <p>Payment condition within 3 days</p>
