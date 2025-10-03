@@ -10,7 +10,7 @@
     <style>
         @page {
             size: A4;
-            margin-top: 13mm;
+            margin-top: 10mm;
             margin-bottom: 13mm;
         }
         /* body {
@@ -106,18 +106,25 @@
         <table class="no-border">
             <tr>
                 <td style="padding: 0;">
-                    <table class="no-border top_wrapper" style="background: #000;">
-                        <tr>
-                            <td class="center"
-                                style="padding:5px; color:#fff; border-bottom:1px solid #272727;">
-                                <span style="font-size:10px"><img src="{{ public_path('img/Screenshot_2.png') }}" style="width:100px;padding-top:4px; height:auto;">
-                                </span>
-                            </td>
-                        </tr>
-                        <tr style="border-bottom: 1px solid #000; color: #fff; background: #000;">
-                            <td class="title center" style="width: 33.333%; color: #fff; font-size:10px">ESTIMATE</td>
-                        </tr>
-                    </table>
+                    <table class="no-border top_wrapper" style="background: #fff; ">
+                    <tr>
+                        <td class="center" style="color:#000; text-align:center; border-collapse: collapse;">
+                            <!-- First image with border -->
+                            <div style="padding:4px;width:100%; border:1px solid #000; box-sizing:border-box; margin-bottom:2px;">
+                            <div style=" ">
+                                <img src="{{ public_path('img/Screenshot_5.png') }}" style="width:30px; height:auto; display:block; margin:0 auto;">
+                            </div>
+                            <!-- Second image with border -->
+                            <div>
+                                <img src="{{ public_path('img/Screenshot_6.png') }}" style="width:100px; height:auto; display:block; margin:0 auto;">
+                            </div>
+                        </div>
+                            <!-- Third: ESTIMATE label with border -->
+                            <div style="padding:4px; width:100%; border:1px solid #000; box-sizing:border-box; font-size:12px;">
+                                ESTIMATE
+                            </div>
+                        </td>
+                    </tr>
                     {{-- <br> --}}
                     {{-- <table class="no-border" style="border-bottom: 1px solid #000; color: #fff; background: #000;">
                         <tr>
@@ -156,11 +163,11 @@
 
         <table style="margin-top:3px; border-collapse: separate;" class="main_table">
             <tr>
-                <th style="background: #000; color: #fff;">Particulars</th>
-                <th style="background: #000; color: #fff; width: 50px;">Bag</th>
-        <th style=" background: #000; color: #fff; width: 60px;">Net.Wt.</th>
-                <th style="background: #000; color: #fff; width: 70px;">Rate</th>
-        <th style=" background: #000; color: #fff; width: 110px;">Amount</th>
+                <th style="background: #fff; color: #000;">Particulars</th>
+                <th style="background: #fff; color: #000; width: 50px;">Bag</th>
+        <th style=" background: #fff; color: #000; width: 60px;">Net.Wt.</th>
+                <th style="background: #fff; color: #000; width: 70px;">Rate</th>
+        <th style=" background: #fff; color: #000; width: 110px;">Amount</th>
             </tr>
             <tr>
                 <td class="particulars" style="background: #f3f3f3;">
